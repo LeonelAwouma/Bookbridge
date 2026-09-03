@@ -2,28 +2,30 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BookOpen, Globe2, Heart, MapPin, School, Users } from 'lucide-react'
 import { getCitiesWithActivity, getPlatformImpact } from '@/lib/supabase/impact-queries'
+import { getServerTranslator } from '@/lib/i18n/server'
 
 export const metadata: Metadata = { title: 'Impact — BookBridge' }
 
 export default async function ImpactPage() {
   const [impact, cities] = await Promise.all([getPlatformImpact(), getCitiesWithActivity()])
+  const { t } = await getServerTranslator()
 
   const stats = [
-    { label: 'Books donated', value: impact.booksDonated, icon: BookOpen },
-    { label: 'Active donors', value: impact.activeDonors, icon: Heart },
-    { label: 'Beneficiaries reached', value: impact.beneficiaries, icon: Users },
-    { label: 'Organizations supported', value: impact.schoolsSupported, icon: School },
-    { label: 'Cities reached', value: impact.citiesReached, icon: MapPin },
-    { label: 'Countries reached', value: impact.countriesReached, icon: Globe2 },
+    { label: t('impact.booksDonated'), value: impact.booksDonated, icon: BookOpen },
+    { label: t('impact.activeDonors'), value: impact.activeDonors, icon: Heart },
+    { label: t('impact.beneficiariesReached'), value: impact.beneficiaries, icon: Users },
+    { label: t('impact.organizationsSupported'), value: impact.schoolsSupported, icon: School },
+    { label: t('impact.citiesReached'), value: impact.citiesReached, icon: MapPin },
+    { label: t('impact.countriesReached'), value: impact.countriesReached, icon: Globe2 },
   ]
 
   return (
     <div className="content-section">
       <div className="section-heading">
         <div>
-          <div className="eyebrow">Our impact</div>
-          <h1 className="font-serif text-4xl">Education, shared locally.</h1>
-          <p>Every number here represents a book that found a new reader instead of collecting dust.</p>
+          <div className="eyebrow">{t('impact.eyebrow')}</div>
+          <h1 className="font-serif text-4xl">{t('impact.title')}</h1>
+          <p>{t('impact.subtitle')}</p>
         </div>
       </div>
 
@@ -39,7 +41,7 @@ export default async function ImpactPage() {
 
       {cities.length > 0 && (
         <section className="mt-12">
-          <h2 className="font-serif text-2xl">Impact by city</h2>
+          <h2 className="font-serif text-2xl">{t('impact.impactByCity')}</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {cities.map((c) => (
               <Link key={c.city} href={`/impact/${encodeURIComponent(c.city)}`} className="category">

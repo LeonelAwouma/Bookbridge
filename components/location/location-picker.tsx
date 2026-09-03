@@ -34,7 +34,7 @@ export function LocationPicker({ value, onChange }: { value: LocationValue; onCh
 
   function useMyLocation() {
     if (!('geolocation' in navigator)) {
-      setLocateError('Geolocation is not supported on this device.')
+      setLocateError(t('common.locationUnsupported'))
       return
     }
     setLocating(true)
@@ -55,7 +55,7 @@ export function LocationPicker({ value, onChange }: { value: LocationValue; onCh
         setLocating(false)
       },
       () => {
-        setLocateError('Could not access your location. Please select it manually.')
+        setLocateError(t('common.locationError'))
         setLocating(false)
       },
       { enableHighAccuracy: false, timeout: 8000 },
@@ -128,7 +128,7 @@ export function LocationPicker({ value, onChange }: { value: LocationValue; onCh
         </Button>
         {locateError && <p className="text-xs text-destructive">{locateError}</p>}
         {value.latitude && value.longitude && !locateError && (
-          <p className="text-xs text-muted-foreground">Location captured — your exact position stays private.</p>
+          <p className="text-xs text-muted-foreground">{t('common.locationCaptured')}</p>
         )}
       </div>
     </div>

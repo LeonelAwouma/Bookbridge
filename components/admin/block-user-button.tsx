@@ -6,8 +6,10 @@ import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { setUserBlockedAction } from '@/lib/actions/admin'
+import { useI18n } from '@/lib/i18n/provider'
 
 export function BlockUserButton({ profileId, blocked }: { profileId: string; blocked: boolean }) {
+  const { t } = useI18n()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -25,7 +27,7 @@ export function BlockUserButton({ profileId, blocked }: { profileId: string; blo
   return (
     <Button size="sm" variant={blocked ? 'outline' : 'destructive'} onClick={onClick} disabled={loading}>
       {loading && <Loader2 className="animate-spin" size={14} />}
-      {blocked ? 'Unblock' : 'Block'}
+      {blocked ? t('admin.unblock') : t('admin.block')}
     </Button>
   )
 }

@@ -3,23 +3,25 @@
 import { Share2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n/provider'
 
 export function ShareImpactCard({ booksDonated, peopleSupported }: { booksDonated: number; peopleSupported: number }) {
-  const text = `I donated ${booksDonated} book${booksDonated === 1 ? '' : 's'} on BookBridge and helped ${peopleSupported} ${
-    peopleSupported === 1 ? 'person' : 'people'
-  } access education. Give your books a second life too!`
+  const { t, dict } = useI18n()
+  const bookWord = booksDonated === 1 ? dict.dashboard.shareImpactBook : dict.dashboard.shareImpactBooks
+  const personWord = peopleSupported === 1 ? dict.dashboard.shareImpactPerson : dict.dashboard.shareImpactPeople
+  const text = `${dict.dashboard.shareImpactIDonated} ${booksDonated} ${bookWord} ${dict.dashboard.shareImpactOnBookBridge} ${peopleSupported} ${personWord} ${dict.dashboard.shareImpactAccessEducation}`
 
   async function share() {
     if (navigator.share) {
       try {
-        await navigator.share({ text, title: 'My BookBridge impact' })
+        await navigator.share({ text, title: 'BookBridge' })
       } catch {
         // user cancelled
       }
       return
     }
     await navigator.clipboard.writeText(text)
-    toast.success('Copied to clipboard — share it anywhere!')
+    toast.success(t('dashboard.shareCopied'))
   }
 
   if (booksDonated === 0) return null
@@ -30,7 +32,7 @@ export function ShareImpactCard({ booksDonated, peopleSupported }: { booksDonate
         {text}
       </p>
       <Button size="sm" variant="outline" className="mt-3 bg-white" onClick={share}>
-        <Share2 size={14} /> Share your impact
+        <Share2 size={14} /> {t('dashboard.shareButton')}
       </Button>
     </div>
   )

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { getServerTranslator } from '@/lib/i18n/server'
 import type { ActionResult } from './auth'
 
 export async function createDonationRequestAction(input: {
@@ -23,7 +24,10 @@ export async function createDonationRequestAction(input: {
     .eq('status', 'pending')
     .maybeSingle()
 
-  if (existing) return { error: 'You already have a pending request for this book.' }
+  if (existing) {
+    const { t } = await getServerTranslator()
+    return { error: t('books.alreadyPending') }
+  }
 
   const { error } = await supabase.from('donation_requests').insert({
     book_id: input.bookId,

@@ -1,9 +1,10 @@
 import Link from 'next/link'
-import { ArrowRight, BookOpen, Gift, Heart, MapPin, Search, ShieldCheck, Sparkles, Users } from 'lucide-react'
+import { ArrowRight, BookOpen, Gift, Heart, MapPin, Search, ShieldCheck, Users } from 'lucide-react'
 import { BookCard } from '@/components/books/book-card'
 import { getBooks } from '@/lib/supabase/books-queries'
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries'
 import { createClient } from '@/lib/supabase/server'
+import { getServerTranslator } from '@/lib/i18n/server'
 import { majorCities } from '@/lib/data/locations'
 
 async function getPlatformStats() {
@@ -27,6 +28,7 @@ async function getNeedsNearby(city?: string) {
 export default async function HomePage() {
   const { profile } = await getCurrentUserAndProfile()
   const city = profile?.city || majorCities[0].city
+  const { dict, t } = await getServerTranslator()
 
   const [books, stats, needs] = await Promise.all([getBooks({ city, limit: 8 }), getPlatformStats(), getNeedsNearby(city)])
 
@@ -34,20 +36,20 @@ export default async function HomePage() {
     <main className="min-h-screen bg-background text-foreground" id="top">
       <section className="hero-shell">
         <div className="hero-copy">
-          <div className="eyebrow">
-            <Sparkles size={15} /> Give your books a second life
-          </div>
+          <div className="eyebrow">{t('home.heroEyebrow')}</div>
           <h1>
-            Give Your Books
-            <br />a <em>Second Life</em>
+            {dict.home.heroHeadlineLine1}
+            <br />
+            {dict.home.heroHeadlineLine2Prefix}
+            <em>{dict.home.heroHeadlineLine2Em}</em>
           </h1>
-          <p>Donate books you no longer use and help students, schools, and communities near you access education.</p>
+          <p>{t('home.heroSubheadline')}</p>
           <div className="hero-actions">
             <Link className="button button-primary" href="/donate">
-              <Gift size={17} /> Donate Books
+              <Gift size={17} /> {t('home.ctaDonate')}
             </Link>
             <Link className="button button-secondary" href="/books">
-              Find Books <ArrowRight size={17} />
+              {t('home.ctaFind')} <ArrowRight size={17} />
             </Link>
           </div>
           <div className="social-proof">
@@ -57,9 +59,7 @@ export default async function HomePage() {
               <span>MO</span>
               <span>+</span>
             </div>
-            <span>
-              <strong>{stats.books}+</strong> books already donated
-            </span>
+            <span>{t('home.booksAlreadyDonated', { count: stats.books })}</span>
           </div>
         </div>
         <div className="hero-art" aria-label="Illustration of books being passed between people">
@@ -86,9 +86,9 @@ export default async function HomePage() {
           <div className="leaf leaf-one" />
           <div className="leaf leaf-two" />
           <span className="art-label">
-            A small act
+            {dict.home.artLabelLine1}
             <br />
-            <strong>travels far.</strong>
+            <strong>{dict.home.artLabelStrong}</strong>
           </span>
         </div>
       </section>
@@ -96,37 +96,37 @@ export default async function HomePage() {
       <section className="impact-bar">
         <div>
           <strong>{stats.books}+</strong>
-          <span>books donated</span>
+          <span>{t('home.impactBooksDonated')}</span>
         </div>
         <div>
           <strong>{stats.donors}+</strong>
-          <span>active donors</span>
+          <span>{t('home.impactActiveDonors')}</span>
         </div>
         <div>
           <strong>{stats.schools}+</strong>
-          <span>organizations supported</span>
+          <span>{t('home.impactOrganizationsSupported')}</span>
         </div>
         <div className="impact-note">
-          <Heart size={18} fill="currentColor" /> Every book makes a difference.
+          <Heart size={18} fill="currentColor" /> {t('home.impactNote')}
         </div>
       </section>
 
       <section id="explore" className="content-section">
         <div className="section-heading">
           <div>
-            <div className="eyebrow">Discover & share</div>
-            <h2>Books near {city}</h2>
-            <p>Find your next read, or help one find its reader.</p>
+            <div className="eyebrow">{t('home.exploreEyebrow')}</div>
+            <h2>{t('home.booksNear', { city })}</h2>
+            <p>{t('home.booksNearSubtitle')}</p>
           </div>
           <Link href="/books" className="text-button">
-            See all books <ArrowRight size={15} />
+            {t('home.seeAllBooks')} <ArrowRight size={15} />
           </Link>
         </div>
         {books.length === 0 ? (
           <div className="map-view">
             <MapPin size={28} />
-            <strong>No books listed near {city} yet</strong>
-            <span>Be the first to donate in your area.</span>
+            <strong>{t('home.noBooksYet', { city })}</strong>
+            <span>{t('home.noBooksYetHint')}</span>
           </div>
         ) : (
           <div className="book-grid">
@@ -140,16 +140,16 @@ export default async function HomePage() {
       <section className="needs-section">
         <div className="section-heading">
           <div>
-            <div className="eyebrow">Make an impact</div>
-            <h2>Books Needed Near You</h2>
-            <p>Somebody is waiting for the right book.</p>
+            <div className="eyebrow">{t('home.impactEyebrow')}</div>
+            <h2>{t('home.needsNear')}</h2>
+            <p>{t('home.needsNearSubtitle')}</p>
           </div>
           <Link href="/requests" className="text-button">
-            See all requests <ArrowRight size={15} />
+            {t('home.seeAllRequests')} <ArrowRight size={15} />
           </Link>
         </div>
         {needs.length === 0 ? (
-          <p className="muted">No open requests near {city} right now.</p>
+          <p className="muted">{t('home.noOpenRequests', { city })}</p>
         ) : (
           <div className="needs-grid">
             {needs.map((need) => (
@@ -161,9 +161,9 @@ export default async function HomePage() {
                   {need.city}
                 </p>
                 <div className="need-bottom">
-                  <span>{need.quantity_needed - need.quantity_fulfilled} books needed</span>
+                  <span>{t('home.booksNeededCount', { count: need.quantity_needed - need.quantity_fulfilled })}</span>
                   <span>
-                    I can help <ArrowRight size={15} />
+                    {t('home.iCanHelp')} <ArrowRight size={15} />
                   </span>
                 </div>
               </Link>
@@ -174,32 +174,32 @@ export default async function HomePage() {
 
       <section id="how-it-works" className="how-section">
         <div className="how-intro">
-          <div className="eyebrow">Simple by design</div>
+          <div className="eyebrow">{t('home.howEyebrow')}</div>
           <h2>
-            One book.
+            {dict.home.howTitleLine1}
             <br />
-            <em>A world of difference.</em>
+            <em>{dict.home.howTitleEm}</em>
           </h2>
-          <p>Whether you're sharing a book or looking for one, BookBridge keeps it simple, local, and human.</p>
+          <p>{t('home.howSubtitle')}</p>
         </div>
         <div className="steps">
           <div>
             <span>01</span>
             <Gift size={24} />
-            <h3>List your books</h3>
-            <p>Take a few photos and describe your books in under two minutes.</p>
+            <h3>{t('home.step1Title')}</h3>
+            <p>{t('home.step1Body')}</p>
           </div>
           <div>
             <span>02</span>
             <Search size={24} />
-            <h3>Connect with someone nearby</h3>
-            <p>Beneficiaries near you request the books they need.</p>
+            <h3>{t('home.step2Title')}</h3>
+            <p>{t('home.step2Body')}</p>
           </div>
           <div>
             <span>03</span>
             <Users size={24} />
-            <h3>Give the books and create impact</h3>
-            <p>Arrange a safe handover and track your impact.</p>
+            <h3>{t('home.step3Title')}</h3>
+            <p>{t('home.step3Body')}</p>
           </div>
         </div>
       </section>
@@ -207,26 +207,26 @@ export default async function HomePage() {
       <section className="trust-section">
         <ShieldCheck size={28} />
         <div>
-          <h2>Built on trust, one neighbor at a time.</h2>
-          <p>Your privacy matters. We show neighborhoods, never exact addresses, and you're always in control of what you share.</p>
+          <h2>{t('home.trustTitle')}</h2>
+          <p>{t('home.trustBody')}</p>
         </div>
         <Link href="/impact" className="button button-secondary">
-          Our impact <ArrowRight size={16} />
+          {t('home.ourImpact')} <ArrowRight size={16} />
         </Link>
       </section>
 
       <section className="org-cta">
         <div>
-          <div className="eyebrow">For schools & organizations</div>
+          <div className="eyebrow">{t('home.orgCtaEyebrow')}</div>
           <h2>
-            Does your school or organization
+            {dict.home.orgCtaTitleLine1}
             <br />
-            need books?
+            {dict.home.orgCtaTitleLine2}
           </h2>
-          <p>Create a verified organization profile, publish your needs, and receive donations directly from your community.</p>
+          <p>{t('home.orgCtaBody')}</p>
         </div>
         <Link href="/signup" className="button button-primary">
-          Create an Organization Account <ArrowRight size={17} />
+          {t('home.orgCtaButton')} <ArrowRight size={17} />
         </Link>
       </section>
 
@@ -239,11 +239,11 @@ export default async function HomePage() {
             book<span>bridge</span>
           </span>
         </Link>
-        <span>Books move. Communities grow.</span>
+        <span>{t('home.footerTagline')}</span>
         <div>
-          <Link href="/how-it-works">About</Link>
-          <Link href="/impact">Impact</Link>
-          <Link href="/">Privacy</Link>
+          <Link href="/how-it-works">{t('home.footerAbout')}</Link>
+          <Link href="/impact">{t('home.footerImpact')}</Link>
+          <Link href="/">{t('home.footerPrivacy')}</Link>
         </div>
       </footer>
     </main>

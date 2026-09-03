@@ -9,9 +9,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { LocationPicker, emptyLocation, type LocationValue } from '@/components/location/location-picker'
 import { completeOnboardingAction } from '@/lib/actions/profile'
+import { useI18n } from '@/lib/i18n/provider'
 import type { UserType } from '@/lib/supabase/types'
 
 export function OnboardingForm({ userType }: { userType: UserType }) {
+  const { t } = useI18n()
   const router = useRouter()
   const [location, setLocation] = useState<LocationValue>(emptyLocation)
   const [bio, setBio] = useState('')
@@ -21,7 +23,7 @@ export function OnboardingForm({ userType }: { userType: UserType }) {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!location.country || !location.city) {
-      setError('Please select at least your country and city.')
+      setError(t('auth.onboardingLocationError'))
       return
     }
     setSubmitting(true)
@@ -39,25 +41,23 @@ export function OnboardingForm({ userType }: { userType: UserType }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-serif text-2xl">Where are you located?</CardTitle>
-        <CardDescription>
-          This helps us show you books and requests nearby. Your exact address is never shown publicly.
-        </CardDescription>
+        <CardTitle className="font-serif text-2xl">{t('auth.onboardingTitle')}</CardTitle>
+        <CardDescription>{t('auth.onboardingSubtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="flex flex-col gap-5">
           <LocationPicker value={location} onChange={setLocation} />
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="bio">Short bio (optional)</Label>
-            <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="A sentence about you or your organization" />
+            <Label htmlFor="bio">{t('auth.bioOptional')}</Label>
+            <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder={t('auth.bioPlaceholder')} />
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
           <Button type="submit" size="lg" className="w-full" disabled={submitting}>
             {submitting && <Loader2 className="animate-spin" size={16} />}
-            Continue
+            {t('auth.continueButton')}
           </Button>
         </form>
       </CardContent>

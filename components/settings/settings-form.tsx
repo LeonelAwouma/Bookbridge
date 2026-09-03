@@ -9,9 +9,11 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { LocationPicker, type LocationValue } from '@/components/location/location-picker'
 import { updateProfileAction } from '@/lib/actions/profile'
+import { useI18n } from '@/lib/i18n/provider'
 import type { Profile } from '@/lib/supabase/types'
 
 export function SettingsForm({ profile }: { profile: Profile }) {
+  const { t, locale } = useI18n()
   const [fullName, setFullName] = useState(profile.full_name)
   const [bio, setBio] = useState(profile.bio ?? '')
   const [phone, setPhone] = useState(profile.phone ?? '')
@@ -28,27 +30,27 @@ export function SettingsForm({ profile }: { profile: Profile }) {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSubmitting(true)
-    const result = await updateProfileAction({ fullName, bio, phone, locale: profile.locale, ...location })
+    const result = await updateProfileAction({ fullName, bio, phone, locale, ...location })
     setSubmitting(false)
     if (result.error) {
       toast.error(result.error)
       return
     }
-    toast.success('Profile updated.')
+    toast.success(t('settings.updated'))
   }
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="fullName">Full name</Label>
+        <Label htmlFor="fullName">{t('settings.fullName')}</Label>
         <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="bio">Bio</Label>
+        <Label htmlFor="bio">{t('settings.bio')}</Label>
         <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} />
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="phone">Phone (private, only shared after a request is accepted)</Label>
+        <Label htmlFor="phone">{t('settings.phone')}</Label>
         <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
       </div>
 
@@ -56,7 +58,7 @@ export function SettingsForm({ profile }: { profile: Profile }) {
 
       <Button type="submit" size="lg" disabled={submitting} className="w-full sm:w-auto">
         {submitting && <Loader2 className="animate-spin" size={16} />}
-        Save changes
+        {t('settings.saveChanges')}
       </Button>
     </form>
   )

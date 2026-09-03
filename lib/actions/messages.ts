@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { translateFor } from '@/lib/i18n/server'
 import type { ActionResult } from './auth'
 
 export async function sendMessageAction(input: { conversationId: string; body: string }): Promise<ActionResult> {
@@ -27,11 +28,20 @@ export async function sendMessageAction(input: { conversationId: string; body: s
     .neq('profile_id', user.id)
 
   if (participants) {
+    const { data: recipients } = await supabase
+      .from('profiles')
+      .select('id, locale')
+      .in(
+        'id',
+        participants.map((p) => p.profile_id),
+      )
+    const localeById = new Map((recipients ?? []).map((r) => [r.id, r.locale]))
+
     for (const p of participants) {
       await supabase.from('notifications').insert({
         profile_id: p.profile_id,
         type: 'new_message',
-        title: 'New message',
+        title: translateFor(localeById.get(p.profile_id), 'notify.newMessageTitle'),
         body: input.body.trim().slice(0, 140),
         link: `/messages/${input.conversationId}`,
       })

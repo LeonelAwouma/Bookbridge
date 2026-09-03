@@ -14,18 +14,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { loginAction } from '@/lib/actions/auth'
 import { useI18n } from '@/lib/i18n/provider'
 
-const schema = z.object({
-  email: z.string().email('Enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
-})
-
-type FormValues = z.infer<typeof schema>
+type FormValues = { email: string; password: string }
 
 export function LoginForm() {
   const { t } = useI18n()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [serverError, setServerError] = useState<string | null>(null)
+
+  const schema = z.object({
+    email: z.string().email(t('auth.emailError')),
+    password: z.string().min(1, t('auth.passwordRequiredError')),
+  })
 
   const {
     register,

@@ -8,8 +8,10 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog'
 import { submitReviewAction } from '@/lib/actions/requests'
+import { useI18n } from '@/lib/i18n/provider'
 
 export function ReviewDialog({ donationRequestId, revieweeId, revieweeName }: { donationRequestId: string; revieweeId: string; revieweeName: string }) {
+  const { t } = useI18n()
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [rating, setRating] = useState(5)
@@ -26,17 +28,17 @@ export function ReviewDialog({ donationRequestId, revieweeId, revieweeName }: { 
       return
     }
     setOpen(false)
-    toast.success('Thanks for your feedback!')
+    toast.success(t('dashboard.reviewThanks'))
     router.refresh()
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button size="sm" variant="outline" />}>Rate experience</DialogTrigger>
+      <DialogTrigger render={<Button size="sm" variant="outline" />}>{t('dashboard.rateExperience')}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Rate your experience with {revieweeName}</DialogTitle>
-          <DialogDescription>This helps build trust across the community.</DialogDescription>
+          <DialogTitle>{t('dashboard.rateDialogTitle', { name: revieweeName })}</DialogTitle>
+          <DialogDescription>{t('dashboard.rateDialogSubtitle')}</DialogDescription>
         </DialogHeader>
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div className="flex gap-1">
@@ -46,11 +48,11 @@ export function ReviewDialog({ donationRequestId, revieweeId, revieweeName }: { 
               </button>
             ))}
           </div>
-          <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Optional comment" />
+          <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder={t('dashboard.optionalComment')} />
           <DialogFooter>
             <Button type="submit" disabled={submitting}>
               {submitting && <Loader2 className="animate-spin" size={16} />}
-              Submit
+              {t('dashboard.submitReview')}
             </Button>
           </DialogFooter>
         </form>

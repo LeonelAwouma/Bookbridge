@@ -37,6 +37,18 @@ export async function completeOnboardingAction(input: {
   return { success: true }
 }
 
+export async function updateProfileLocaleAction(locale: string): Promise<ActionResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { success: true }
+
+  const { error } = await supabase.from('profiles').update({ locale }).eq('id', user.id)
+  if (error) return { error: error.message }
+  return { success: true }
+}
+
 export async function updateProfileAction(input: {
   fullName: string
   bio: string

@@ -10,8 +10,10 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog'
 import { createDonationRequestAction } from '@/lib/actions/requests'
+import { useI18n } from '@/lib/i18n/provider'
 
 export function RequestBookDialog({ bookId, maxQuantity, bookTitle }: { bookId: string; maxQuantity: number; bookTitle: string }) {
+  const { t } = useI18n()
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [quantity, setQuantity] = useState(1)
@@ -30,21 +32,21 @@ export function RequestBookDialog({ bookId, maxQuantity, bookTitle }: { bookId: 
       return
     }
     setOpen(false)
-    toast.success('Request sent — the donor will review it soon.')
+    toast.success(t('books.requestSentToast'))
     router.refresh()
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button size="lg" className="w-full sm:w-auto" />}>Request this book</DialogTrigger>
+      <DialogTrigger render={<Button size="lg" className="w-full sm:w-auto" />}>{t('books.requestThisBook')}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Request &ldquo;{bookTitle}&rdquo;</DialogTitle>
-          <DialogDescription>Tell the donor a little about why you need it. They&apos;ll review your profile before accepting.</DialogDescription>
+          <DialogTitle>{t('books.requestDialogTitle', { title: bookTitle })}</DialogTitle>
+          <DialogDescription>{t('books.requestDialogDescription')}</DialogDescription>
         </DialogHeader>
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="quantity">Quantity</Label>
+            <Label htmlFor="quantity">{t('common.quantity')}</Label>
             <Input
               id="quantity"
               type="number"
@@ -55,14 +57,14 @@ export function RequestBookDialog({ bookId, maxQuantity, bookTitle }: { bookId: 
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="message">Why do you need this book?</Label>
-            <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="A sentence or two helps the donor decide." />
+            <Label htmlFor="message">{t('books.whyDoYouNeed')}</Label>
+            <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} placeholder={t('books.whyDoYouNeedPlaceholder')} />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="submit" disabled={submitting}>
               {submitting && <Loader2 className="animate-spin" size={16} />}
-              Send request
+              {t('books.sendRequest')}
             </Button>
           </DialogFooter>
         </form>

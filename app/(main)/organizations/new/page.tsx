@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { OrganizationForm } from '@/components/organizations/organization-form'
 import { emptyLocation } from '@/components/location/location-picker'
+import { getServerTranslator } from '@/lib/i18n/server'
 import type { OrganizationType, UserType } from '@/lib/supabase/types'
 
 export const metadata: Metadata = { title: 'Create an Organization — BookBridge' }
@@ -15,6 +16,8 @@ export default async function NewOrganizationPage() {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) redirect('/login?next=/organizations/new')
+
+  const { t } = await getServerTranslator()
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -37,8 +40,8 @@ export default async function NewOrganizationPage() {
     <div className="mx-auto max-w-2xl px-4 py-10 sm:py-14">
       <div className="mb-8">
         <p className="eyebrow">BookBridge</p>
-        <h1 className="mt-2 font-serif text-3xl sm:text-4xl">Create an organization account</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Publish book needs and receive donations for your school, library, or NGO.</p>
+        <h1 className="mt-2 font-serif text-3xl sm:text-4xl">{t('organizations.createTitle')}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t('organizations.createSubtitle')}</p>
       </div>
       <OrganizationForm initialLocation={initialLocation} defaultType={defaultType} />
     </div>

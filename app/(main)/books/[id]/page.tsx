@@ -7,7 +7,8 @@ import { BookOpen, MapPin, PackageCheck, ShieldCheck, Truck } from 'lucide-react
 import { Badge } from '@/components/ui/badge'
 import { getBookById } from '@/lib/supabase/books-queries'
 import { createClient } from '@/lib/supabase/server'
-import { categoryLabels, conditionLabels, educationLevelLabels } from '@/lib/data/taxonomy'
+import { categoryLabel, conditionLabel, educationLevelLabel } from '@/lib/data/taxonomy'
+import { getServerTranslator } from '@/lib/i18n/server'
 import { RequestBookDialog } from '@/components/books/request-book-dialog'
 import { ReportButton } from '@/components/trust/report-button'
 import { DonationConfirmationToast } from '@/components/books/donation-confirmation-toast'
@@ -30,7 +31,8 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
 
   const isOwner = user ? (book.donor_id === user.id || (book.organization_id && (await isOrgOwner(user.id, book.organization_id)))) : false
   const canRequest = !!user && !isOwner && ['available', 'requested'].includes(book.status)
-  const donorLabel = book.organizationName ?? book.donorName ?? 'BookBridge donor'
+  const donorLabel = book.organizationName ?? book.donorName ?? 'BookBridge'
+  const { dict, t } = await getServerTranslator()
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:py-14">
@@ -62,11 +64,11 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
         <div className="flex flex-col gap-4">
           <div>
             <div className="flex flex-wrap gap-1.5">
-              <Badge variant="secondary">{categoryLabels[book.category]}</Badge>
-              <Badge variant="secondary">{educationLevelLabels[book.education_level]}</Badge>
+              <Badge variant="secondary">{categoryLabel(dict, book.category)}</Badge>
+              <Badge variant="secondary">{educationLevelLabel(dict, book.education_level)}</Badge>
               {book.organizationVerified && (
                 <Badge className="gap-1">
-                  <ShieldCheck size={12} /> Verified organization
+                  <ShieldCheck size={12} /> {t('books.verifiedOrganization')}
                 </Badge>
               )}
             </div>
@@ -81,26 +83,26 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
             <div className="flex-1">
               <p className="text-sm font-medium">{donorLabel}</p>
               <p className="text-xs text-muted-foreground">
-                {book.donorRating ? `★ ${book.donorRating.toFixed(1)}` : 'New donor'}
+                {book.donorRating ? `★ ${book.donorRating.toFixed(1)}` : t('books.newDonor')}
               </p>
             </div>
           </div>
 
           <dl className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <dt className="text-xs text-muted-foreground">Condition</dt>
-              <dd>{conditionLabels[book.condition]}</dd>
+              <dt className="text-xs text-muted-foreground">{t('common.condition')}</dt>
+              <dd>{conditionLabel(dict, book.condition)}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">Quantity available</dt>
+              <dt className="text-xs text-muted-foreground">{t('books.quantityAvailable')}</dt>
               <dd>{book.quantity_available}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">Language</dt>
+              <dt className="text-xs text-muted-foreground">{t('common.language')}</dt>
               <dd className="capitalize">{book.language}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">Location</dt>
+              <dt className="text-xs text-muted-foreground">{t('common.location')}</dt>
               <dd className="flex items-center gap-1">
                 <MapPin size={13} /> {book.neighborhood ? `${book.neighborhood}, ` : ''}
                 {book.city}
@@ -111,12 +113,12 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
           <div className="flex gap-4 text-xs text-muted-foreground">
             {book.pickup_available && (
               <span className="flex items-center gap-1">
-                <PackageCheck size={14} /> Pickup available
+                <PackageCheck size={14} /> {t('books.pickupAvailable')}
               </span>
             )}
             {book.dropoff_available && (
               <span className="flex items-center gap-1">
-                <Truck size={14} /> Drop-off available
+                <Truck size={14} /> {t('books.dropoffAvailable')}
               </span>
             )}
           </div>
@@ -127,21 +129,20 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
             {canRequest && <RequestBookDialog bookId={book.id} maxQuantity={book.quantity_available || 1} bookTitle={book.title} />}
             {isOwner && (
               <Link href="/dashboard/donations" className="text-sm font-medium text-primary hover:underline">
-                Manage requests for this book →
+                {t('books.manageRequestsLink')}
               </Link>
             )}
             {!user && (
               <Link href={`/login?next=/books/${book.id}`} className="text-sm font-medium text-primary hover:underline">
-                Log in to request this book
+                {t('books.loginToRequest')}
               </Link>
             )}
             {user && !isOwner && <ReportButton targetType="book" targetId={book.id} />}
           </div>
 
           <div className="rounded-lg bg-sage/40 p-3 text-xs text-muted-foreground" style={{ background: 'var(--sage)' }}>
-            <strong className="block text-foreground">Meet safely</strong>
-            Choose a public, well-lit place for handovers, bring someone with you if possible, and confirm the exchange in the
-            app before sharing further contact details.
+            <strong className="block text-foreground">{t('books.meetSafelyTitle')}</strong>
+            {t('books.meetSafelyBody')}
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { translateFor } from '@/lib/i18n/server'
 import type { ActionResult } from './auth'
 import type { ReportStatus, VerificationStatus } from '@/lib/supabase/types'
 
@@ -13,10 +14,11 @@ export async function setOrganizationVerificationAction(organizationId: string, 
   if (status === 'verified') {
     const { data: org } = await supabase.from('organizations').select('owner_id, name').eq('id', organizationId).single()
     if (org) {
+      const { data: owner } = await supabase.from('profiles').select('locale').eq('id', org.owner_id).single()
       await supabase.from('notifications').insert({
         profile_id: org.owner_id,
         type: 'org_verified',
-        title: `${org.name} is now a verified organization`,
+        title: translateFor(owner?.locale, 'notify.orgVerifiedTitle', { name: org.name }),
         link: `/organizations/${organizationId}`,
       })
     }

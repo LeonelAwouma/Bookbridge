@@ -1,17 +1,19 @@
 import type { Metadata } from 'next'
 import { getAdminOverview } from '@/lib/supabase/admin-queries'
 import { AdminBarChart } from '@/components/admin/admin-charts'
+import { getServerTranslator } from '@/lib/i18n/server'
 
 export const metadata: Metadata = { title: 'Admin — BookBridge' }
 
 export default async function AdminOverviewPage() {
   const overview = await getAdminOverview()
+  const { t } = await getServerTranslator()
 
   const stats = [
-    { label: 'Total users', value: overview.totalUsers },
-    { label: 'Total book listings', value: overview.totalBooks },
-    { label: 'Completed donations', value: overview.completedDonations },
-    { label: 'Open reports', value: overview.openReports },
+    { label: t('admin.totalUsers'), value: overview.totalUsers },
+    { label: t('admin.totalBooks'), value: overview.totalBooks },
+    { label: t('admin.completedDonations'), value: overview.completedDonations },
+    { label: t('admin.openReports'), value: overview.openReports },
   ]
 
   return (
@@ -27,15 +29,15 @@ export default async function AdminOverviewPage() {
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         <div className="rounded-lg border border-border p-4">
-          <h2 className="text-sm font-medium">Donations by month</h2>
+          <h2 className="text-sm font-medium">{t('admin.donationsByMonth')}</h2>
           <AdminBarChart data={overview.donationsByMonth} dataKey="count" nameKey="month" />
         </div>
         <div className="rounded-lg border border-border p-4">
-          <h2 className="text-sm font-medium">Donations by city</h2>
+          <h2 className="text-sm font-medium">{t('admin.donationsByCity')}</h2>
           <AdminBarChart data={overview.donationsByCity} dataKey="count" nameKey="city" />
         </div>
         <div className="rounded-lg border border-border p-4 sm:col-span-2">
-          <h2 className="text-sm font-medium">Donations by category</h2>
+          <h2 className="text-sm font-medium">{t('admin.donationsByCategory')}</h2>
           <AdminBarChart data={overview.donationsByCategory} dataKey="count" nameKey="category" />
         </div>
       </div>

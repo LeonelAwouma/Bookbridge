@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Bookmark, MapPin } from 'lucide-react'
 import { toggleSavedBookAction } from '@/lib/actions/books'
-import { conditionLabels } from '@/lib/data/taxonomy'
+import { categoryLabel, conditionLabel } from '@/lib/data/taxonomy'
+import { useI18n } from '@/lib/i18n/provider'
 import type { BookWithExtras } from '@/lib/supabase/books-queries'
 
 const coverColors = ['plum', 'gold', 'sage', 'blue']
@@ -35,8 +36,9 @@ export function BookCard({
   saved?: boolean
   canSave?: boolean
 }) {
+  const { t, dict } = useI18n()
   const [isSaved, setIsSaved] = useState(saved)
-  const donorLabel = book.organizationName ?? book.donorName ?? 'BookBridge donor'
+  const donorLabel = book.organizationName ?? book.donorName ?? 'BookBridge'
 
   async function toggleSave(e: React.MouseEvent) {
     e.preventDefault()
@@ -58,7 +60,7 @@ export function BookCard({
       </div>
       <div className="book-info">
         <div className="book-topline">
-          <span className="tag">{book.category.replace(/_/g, ' ')}</span>
+          <span className="tag">{categoryLabel(dict, book.category)}</span>
           {canSave && (
             <button className={`save-button ${isSaved ? 'saved' : ''}`} aria-label="Save book" onClick={toggleSave}>
               <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
@@ -77,9 +79,9 @@ export function BookCard({
         <div className="card-footer">
           <span>
             <span className="mini-avatar">{donorLabel.slice(0, 2).toUpperCase()}</span>
-            {conditionLabels[book.condition]}
+            {conditionLabel(dict, book.condition)}
           </span>
-          <span className="text-button">Request</span>
+          <span className="text-button">{t('books.request')}</span>
         </div>
       </div>
     </Link>

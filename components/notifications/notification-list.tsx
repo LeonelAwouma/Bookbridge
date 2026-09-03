@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { Bell, CheckCheck, Gift, Heart, MessageCircle, PackageCheck, ShieldCheck, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { markAllNotificationsReadAction, markNotificationReadAction } from '@/lib/actions/notifications'
+import { useI18n } from '@/lib/i18n/provider'
 import type { Notification, NotificationType } from '@/lib/supabase/types'
 
 const icons: Record<NotificationType, React.ComponentType<{ size?: number }>> = {
@@ -20,6 +21,7 @@ const icons: Record<NotificationType, React.ComponentType<{ size?: number }>> = 
 }
 
 export function NotificationList({ notifications }: { notifications: Notification[] }) {
+  const { t } = useI18n()
   const router = useRouter()
 
   async function onClick(n: Notification) {
@@ -42,7 +44,7 @@ export function NotificationList({ notifications }: { notifications: Notificatio
             router.refresh()
           }}
         >
-          Mark all as read
+          {t('notifications.markAllRead')}
         </Button>
       )}
       <ul className="flex flex-col divide-y divide-border rounded-lg border border-border">

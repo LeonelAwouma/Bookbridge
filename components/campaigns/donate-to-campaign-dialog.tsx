@@ -9,8 +9,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog'
 import { donateToCampaignAction } from '@/lib/actions/campaigns'
+import { useI18n } from '@/lib/i18n/provider'
 
 export function DonateToCampaignDialog({ campaignId }: { campaignId: string }) {
+  const { t } = useI18n()
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [quantity, setQuantity] = useState(5)
@@ -26,29 +28,29 @@ export function DonateToCampaignDialog({ campaignId }: { campaignId: string }) {
       return
     }
     setOpen(false)
-    toast.success('Thank you! Your pledge was added to the campaign.')
+    toast.success(t('campaigns.pledgeThanks'))
     router.refresh()
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button size="lg" />}>
-        <Gift size={16} /> Donate to this campaign
+        <Gift size={16} /> {t('campaigns.donateToThisCampaign')}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Donate to this campaign</DialogTitle>
-          <DialogDescription>Pledge how many books you'll contribute. The organizer will coordinate collection.</DialogDescription>
+          <DialogTitle>{t('campaigns.donateToThisCampaign')}</DialogTitle>
+          <DialogDescription>{t('campaigns.donateDialogSubtitle')}</DialogDescription>
         </DialogHeader>
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="quantity">Number of books</Label>
+            <Label htmlFor="quantity">{t('campaigns.numberOfBooks')}</Label>
             <Input id="quantity" type="number" min={1} value={quantity} onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))} />
           </div>
           <DialogFooter>
             <Button type="submit" disabled={submitting}>
               {submitting && <Loader2 className="animate-spin" size={16} />}
-              Confirm pledge
+              {t('campaigns.confirmPledge')}
             </Button>
           </DialogFooter>
         </form>

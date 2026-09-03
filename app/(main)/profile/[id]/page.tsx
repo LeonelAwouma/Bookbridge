@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 import { getBooks } from '@/lib/supabase/books-queries'
 import { BookCard } from '@/components/books/book-card'
-import { userTypeLabels } from '@/lib/data/user-types'
+import { userTypeLabel } from '@/lib/data/user-types'
+import { getServerTranslator } from '@/lib/i18n/server'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -20,6 +21,8 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const { data: profile } = await supabase.from('profiles').select('*').eq('id', id).single()
   if (!profile) notFound()
 
+  const { dict, t } = await getServerTranslator()
+
   const [books, { data: achievements }] = await Promise.all([
     getBooks({ donorId: id, status: ['available', 'requested', 'reserved', 'completed'], limit: 8 }),
     supabase.from('user_achievements').select('achievement_id, achievements(title, icon)').eq('profile_id', id),
@@ -33,7 +36,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         </div>
         <div>
           <h1 className="font-serif text-3xl">{profile.full_name}</h1>
-          <p className="text-sm text-muted-foreground">{userTypeLabels[profile.user_type]}</p>
+          <p className="text-sm text-muted-foreground">{userTypeLabel(dict, profile.user_type)}</p>
         </div>
       </div>
 
@@ -44,7 +47,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           </span>
         )}
         <span className="flex items-center gap-1">
-          <Calendar size={14} /> Member since {new Date(profile.created_at).getFullYear()}
+          <Calendar size={14} /> {t('profile.memberSince', { year: new Date(profile.created_at).getFullYear() })}
         </span>
         {profile.rating_count > 0 && (
           <span className="flex items-center gap-1">
@@ -58,19 +61,19 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-lg border border-border p-4">
           <p className="font-serif text-2xl">{profile.books_donated_count}</p>
-          <p className="text-xs text-muted-foreground">Books donated</p>
+          <p className="text-xs text-muted-foreground">{t('dashboard.booksDonated')}</p>
         </div>
         <div className="rounded-lg border border-border p-4">
           <p className="font-serif text-2xl">{profile.people_supported_count}</p>
-          <p className="text-xs text-muted-foreground">People supported</p>
+          <p className="text-xs text-muted-foreground">{t('dashboard.peopleSupported')}</p>
         </div>
         <div className="rounded-lg border border-border p-4">
           <p className="font-serif text-2xl">{profile.books_received_count}</p>
-          <p className="text-xs text-muted-foreground">Books received</p>
+          <p className="text-xs text-muted-foreground">{t('dashboard.booksReceived')}</p>
         </div>
         <div className="rounded-lg border border-border p-4">
           <p className="font-serif text-2xl">{profile.donations_completed_count}</p>
-          <p className="text-xs text-muted-foreground">Donations completed</p>
+          <p className="text-xs text-muted-foreground">{t('admin.completedDonations')}</p>
         </div>
       </div>
 
@@ -87,7 +90,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
       {books.length > 0 && (
         <section className="mt-10">
           <h2 className="flex items-center gap-2 font-serif text-xl">
-            <BookOpen size={18} /> Books shared
+            <BookOpen size={18} /> {t('organizations.booksShared')}
           </h2>
           <div className="book-grid mt-3">
             {books.map((book) => (

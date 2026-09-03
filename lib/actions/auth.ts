@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getServerLocale } from '@/lib/i18n/server'
 import type { UserType } from '@/lib/supabase/types'
 
 export interface ActionResult {
@@ -17,6 +18,7 @@ export async function signUpAction(input: {
   userType: UserType
 }): Promise<ActionResult> {
   const supabase = await createClient()
+  const locale = await getServerLocale()
 
   const { error } = await supabase.auth.signUp({
     email: input.email,
@@ -25,6 +27,7 @@ export async function signUpAction(input: {
       data: {
         full_name: input.fullName,
         user_type: input.userType,
+        locale,
       },
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/auth/confirm`,
     },

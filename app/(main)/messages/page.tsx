@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { MessageCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getConversations } from '@/lib/supabase/messages-queries'
+import { getServerTranslator } from '@/lib/i18n/server'
 
 export const metadata: Metadata = { title: 'Messages — BookBridge' }
 
@@ -14,17 +15,18 @@ export default async function MessagesPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login?next=/messages')
 
+  const { t } = await getServerTranslator()
   const conversations = await getConversations(user.id)
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:py-14">
-      <h1 className="font-serif text-3xl">Messages</h1>
+      <h1 className="font-serif text-3xl">{t('messages.title')}</h1>
 
       {conversations.length === 0 ? (
         <div className="map-view mt-6">
           <MessageCircle size={28} />
-          <strong>No conversations yet</strong>
-          <span>Messages open once a donation request is accepted.</span>
+          <strong>{t('messages.noConversations')}</strong>
+          <span>{t('messages.noConversationsHint')}</span>
         </div>
       ) : (
         <ul className="mt-6 flex flex-col divide-y divide-border rounded-lg border border-border">

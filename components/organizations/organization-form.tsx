@@ -10,18 +10,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { LocationPicker, type LocationValue } from '@/components/location/location-picker'
 import { createOrganizationAction } from '@/lib/actions/organizations'
+import { useI18n } from '@/lib/i18n/provider'
 import type { OrganizationType } from '@/lib/supabase/types'
 
-const orgTypes: { value: OrganizationType; label: string }[] = [
-  { value: 'school', label: 'School' },
-  { value: 'university', label: 'University' },
-  { value: 'library', label: 'Library' },
-  { value: 'ngo', label: 'NGO' },
-  { value: 'association', label: 'Association' },
-  { value: 'company', label: 'Company' },
-]
+const orgTypeValues: OrganizationType[] = ['school', 'university', 'library', 'ngo', 'association', 'company']
 
 export function OrganizationForm({ initialLocation, defaultType }: { initialLocation: LocationValue; defaultType: OrganizationType }) {
+  const { t, dict } = useI18n()
   const router = useRouter()
   const [name, setName] = useState('')
   const [organizationType, setOrganizationType] = useState<OrganizationType>(defaultType)
@@ -36,7 +31,7 @@ export function OrganizationForm({ initialLocation, defaultType }: { initialLoca
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim() || !location.country || !location.city) {
-      setError('Please fill in the organization name, country, and city.')
+      setError(t('organizations.nameError'))
       return
     }
     setSubmitting(true)
@@ -62,20 +57,20 @@ export function OrganizationForm({ initialLocation, defaultType }: { initialLoca
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="name">Organization name *</Label>
+        <Label htmlFor="name">{t('organizations.organizationName')} *</Label>
         <Input id="name" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="organizationType">Type</Label>
+        <Label htmlFor="organizationType">{t('organizations.type')}</Label>
         <Select value={organizationType} onValueChange={(v) => setOrganizationType((v as OrganizationType) ?? 'school')}>
           <SelectTrigger id="organizationType" className="w-full sm:w-64">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {orgTypes.map((t) => (
-              <SelectItem key={t.value} value={t.value}>
-                {t.label}
+            {orgTypeValues.map((value) => (
+              <SelectItem key={value} value={value}>
+                {dict.userTypes[value]}
               </SelectItem>
             ))}
           </SelectContent>
@@ -83,23 +78,23 @@ export function OrganizationForm({ initialLocation, defaultType }: { initialLoca
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="description">Description</Label>
-        <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What does your organization do?" />
+        <Label htmlFor="description">{t('common.description')}</Label>
+        <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
       </div>
 
       <LocationPicker value={location} onChange={setLocation} />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="contactPerson">Contact person</Label>
+          <Label htmlFor="contactPerson">{t('organizations.contactPerson')}</Label>
           <Input id="contactPerson" value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} />
         </div>
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="contactEmail">Contact email</Label>
+          <Label htmlFor="contactEmail">{t('organizations.contactEmail')}</Label>
           <Input id="contactEmail" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
         </div>
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="contactPhone">Contact phone</Label>
+          <Label htmlFor="contactPhone">{t('organizations.contactPhone')}</Label>
           <Input id="contactPhone" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
         </div>
       </div>
@@ -108,7 +103,7 @@ export function OrganizationForm({ initialLocation, defaultType }: { initialLoca
 
       <Button type="submit" size="lg" disabled={submitting} className="w-full sm:w-auto">
         {submitting && <Loader2 className="animate-spin" size={16} />}
-        Create organization
+        {t('organizations.createButton')}
       </Button>
     </form>
   )

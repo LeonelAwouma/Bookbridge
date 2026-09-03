@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 import { getMyNeeds, getMyRequests } from '@/lib/supabase/dashboard-queries'
 import { ReviewDialog } from '@/components/dashboard/review-dialog'
+import { getServerTranslator } from '@/lib/i18n/server'
 
 export const metadata: Metadata = { title: 'My Requests — BookBridge' }
 
@@ -15,6 +16,7 @@ export default async function MyRequestsPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login?next=/dashboard/requests')
 
+  const { dict, t } = await getServerTranslator()
   const [requests, needs] = await Promise.all([getMyRequests(user.id), getMyNeeds(user.id)])
 
   const acceptedIds = requests.filter((r) => r.status === 'accepted' || r.status === 'completed').map((r) => r.id)
@@ -23,18 +25,17 @@ export default async function MyRequestsPage() {
     : { data: [] }
   const conversationByRequest = new Map((conversations ?? []).map((c) => [c.donation_request_id, c.id]))
 
-  const bookOwnerIds = new Set<string>()
   const { data: bookRows } = requests.length ? await supabase.from('books').select('id, donor_id').in('id', requests.map((r) => r.book_id)) : { data: [] }
   const ownerByBook = new Map((bookRows ?? []).map((b) => [b.id, b.donor_id]))
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
-      <h1 className="font-serif text-3xl">My requests</h1>
+      <h1 className="font-serif text-3xl">{t('dashboard.myRequestsTitle')}</h1>
 
       <section className="mt-6">
-        <h2 className="font-serif text-xl">Books I've requested</h2>
+        <h2 className="font-serif text-xl">{t('dashboard.myRequestsHeading')}</h2>
         {requests.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">You haven't requested any books yet.</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t('dashboard.noRequestsMade')}</p>
         ) : (
           <ul className="mt-3 flex flex-col divide-y divide-border rounded-lg border border-border">
             {requests.map((r) => {
@@ -46,16 +47,16 @@ export default async function MyRequestsPage() {
                     <Link href={`/books/${r.book_id}`} className="font-medium hover:underline">
                       {r.book?.title ?? 'Book'}
                     </Link>
-                    <p className="text-xs text-muted-foreground">Requested {new Date(r.created_at).toLocaleDateString()}</p>
+                    <p className="text-xs text-muted-foreground">{t('dashboard.requestedOn', { date: new Date(r.created_at).toLocaleDateString() })}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary">{r.status}</Badge>
+                    <Badge variant="secondary">{dict.requestStatus[r.status]}</Badge>
                     {conversationId && (
                       <Link href={`/messages/${conversationId}`} className="text-xs text-primary hover:underline">
-                        Message
+                        {t('dashboard.message')}
                       </Link>
                     )}
-                    {r.status === 'completed' && ownerId && <ReviewDialog donationRequestId={r.id} revieweeId={ownerId} revieweeName="the donor" />}
+                    {r.status === 'completed' && ownerId && <ReviewDialog donationRequestId={r.id} revieweeId={ownerId} revieweeName={t('dashboard.theDonor')} />}
                   </div>
                 </li>
               )
@@ -66,13 +67,13 @@ export default async function MyRequestsPage() {
 
       <section className="mt-8">
         <div className="flex items-center justify-between">
-          <h2 className="font-serif text-xl">Requests I've posted</h2>
+          <h2 className="font-serif text-xl">{t('dashboard.requestsPostedHeading')}</h2>
           <Link href="/requests/new" className="text-sm text-primary hover:underline">
-            + New request
+            {t('dashboard.newRequest')}
           </Link>
         </div>
         {needs.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">You haven't posted any book needs yet.</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t('dashboard.noNeedsPosted')}</p>
         ) : (
           <ul className="mt-3 flex flex-col divide-y divide-border rounded-lg border border-border">
             {needs.map((n) => (
@@ -80,7 +81,7 @@ export default async function MyRequestsPage() {
                 <Link href={`/requests/${n.id}`} className="font-medium hover:underline">
                   {n.title}
                 </Link>
-                <Badge variant="secondary">{n.status}</Badge>
+                <Badge variant="secondary">{dict.needStatus[n.status]}</Badge>
               </li>
             ))}
           </ul>

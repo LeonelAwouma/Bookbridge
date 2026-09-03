@@ -4,8 +4,11 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n/provider'
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  const { t } = useI18n()
+
   useEffect(() => {
     console.error(error)
   }, [error])
@@ -13,14 +16,12 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-24 text-center">
       <AlertTriangle size={32} className="text-primary" />
-      <h1 className="font-serif text-2xl">Something went wrong</h1>
-      <p className="text-sm text-muted-foreground">
-        We couldn't load this page. Please try again — if the problem continues, come back a little later.
-      </p>
+      <h1 className="font-serif text-2xl">{t('common.somethingWrong')}</h1>
+      <p className="text-sm text-muted-foreground">{t('common.somethingWrongBody')}</p>
       <div className="flex gap-2">
-        <Button onClick={reset}>Try again</Button>
+        <Button onClick={reset}>{t('common.tryAgain')}</Button>
         <Link href="/">
-          <Button variant="outline">Go home</Button>
+          <Button variant="outline">{t('common.goHome')}</Button>
         </Link>
       </div>
     </div>

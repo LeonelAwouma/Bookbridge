@@ -1,58 +1,36 @@
 import type { BookCategory, BookCondition, EducationLevel } from '@/lib/supabase/types'
+import type { Dictionary } from '@/lib/i18n/dictionaries/en'
 
-export const categoryLabels: Record<BookCategory, string> = {
-  primary_school: 'Primary school',
-  secondary_school: 'Secondary school',
-  university: 'University',
-  mathematics: 'Mathematics',
-  science: 'Science',
-  physics: 'Physics',
-  chemistry: 'Chemistry',
-  biology: 'Biology',
-  literature: 'Literature',
-  languages: 'Languages',
-  history: 'History',
-  geography: 'Geography',
-  computer_science: 'Computer Science',
-  engineering: 'Engineering',
-  medicine: 'Medicine',
-  business: 'Business',
-  economics: 'Economics',
-  law: 'Law',
-  childrens_books: "Children's books",
-  dictionaries: 'Dictionaries',
-  encyclopedias: 'Encyclopedias',
-  exam_preparation: 'Exam preparation',
-  professional_books: 'Professional books',
-  fiction: 'Fiction',
-  other: 'Other',
+export function categoryLabel(dict: Dictionary, value: BookCategory) {
+  return dict.categories[value]
 }
 
-export const educationLevelLabels: Record<EducationLevel, string> = {
-  preschool: 'Preschool',
-  primary: 'Primary',
-  secondary: 'Secondary',
-  university: 'University',
-  professional: 'Professional',
-  adult: 'Adult',
-  all_levels: 'All levels',
+export function educationLevelLabel(dict: Dictionary, value: EducationLevel) {
+  return dict.educationLevels[value]
 }
 
-export const conditionLabels: Record<BookCondition, string> = {
-  like_new: 'Like new',
-  good: 'Good',
-  used: 'Used',
-  heavily_used: 'Heavily used but readable',
+export function conditionLabel(dict: Dictionary, value: BookCondition) {
+  return dict.conditions[value]
 }
 
-export const languageOptions = [
-  { code: 'fr', label: 'French' },
-  { code: 'en', label: 'English' },
-  { code: 'ar', label: 'Arabic' },
-  { code: 'sw', label: 'Swahili' },
-  { code: 'other', label: 'Other' },
-]
+export function categoryOptions(dict: Dictionary) {
+  return (Object.keys(dict.categories) as BookCategory[]).map((value) => ({ value, label: dict.categories[value] }))
+}
 
-export const categoryOptions = Object.entries(categoryLabels).map(([value, label]) => ({ value: value as BookCategory, label }))
-export const educationLevelOptions = Object.entries(educationLevelLabels).map(([value, label]) => ({ value: value as EducationLevel, label }))
-export const conditionOptions = Object.entries(conditionLabels).map(([value, label]) => ({ value: value as BookCondition, label }))
+export function educationLevelOptions(dict: Dictionary) {
+  return (Object.keys(dict.educationLevels) as EducationLevel[]).map((value) => ({ value, label: dict.educationLevels[value] }))
+}
+
+export function conditionOptions(dict: Dictionary) {
+  return (Object.keys(dict.conditions) as BookCondition[]).map((value) => ({ value, label: dict.conditions[value] }))
+}
+
+export function languageOptions(dict: Dictionary) {
+  return [
+    { code: 'fr', label: dict.languages.fr },
+    { code: 'en', label: dict.languages.en },
+    { code: 'ar', label: dict.languages.ar },
+    { code: 'sw', label: dict.languages.sw },
+    { code: 'other', label: dict.languages.other },
+  ]
+}

@@ -26,7 +26,7 @@ interface DonateFormProps {
 }
 
 export function DonateForm({ userId, initialLocation, organizations, prefill }: DonateFormProps) {
-  const { t } = useI18n()
+  const { t, dict } = useI18n()
   const router = useRouter()
 
   const [title, setTitle] = useState('')
@@ -63,15 +63,15 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim()) {
-      setError('Please enter the book title.')
+      setError(t('donate.titleError'))
       return
     }
     if (!location.country || !location.city) {
-      setError('Please select at least your country and city.')
+      setError(t('donate.locationError'))
       return
     }
     if (!pickupAvailable && !dropoffAvailable) {
-      setError('Select at least one handover option (pickup or drop-off).')
+      setError(t('donate.handoverError'))
       return
     }
 
@@ -103,7 +103,7 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
     }
 
     if (photos.length > 0) {
-      setUploadStatus(`Uploading photos (0/${photos.length})...`)
+      setUploadStatus(t('donate.uploading', { done: 0, total: photos.length }))
       const supabase = createClient()
       const urls: string[] = []
       for (let i = 0; i < photos.length; i++) {
@@ -114,7 +114,7 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
           const { data } = supabase.storage.from('book-images').getPublicUrl(path)
           urls.push(data.publicUrl)
         }
-        setUploadStatus(`Uploading photos (${i + 1}/${photos.length})...`)
+        setUploadStatus(t('donate.uploading', { done: i + 1, total: photos.length }))
       }
       if (urls.length > 0) await attachBookImagesAction(result.bookId, urls)
     }
@@ -127,13 +127,13 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
       {organizations.length > 0 && (
         <section className="flex flex-col gap-1.5">
-          <Label htmlFor="donorSource">Donating as</Label>
+          <Label htmlFor="donorSource">{t('donate.donatingAs')}</Label>
           <Select value={donorSource} onValueChange={(v) => setDonorSource(v ?? 'individual')}>
             <SelectTrigger id="donorSource" className="w-full sm:w-80">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="individual">Myself</SelectItem>
+              <SelectItem value="individual">{t('donate.myself')}</SelectItem>
               {organizations.map((org) => (
                 <SelectItem key={org.id} value={org.id}>
                   {org.name}
@@ -145,29 +145,29 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
       )}
 
       <section className="flex flex-col gap-4">
-        <h2 className="font-serif text-xl">Book information</h2>
+        <h2 className="font-serif text-xl">{t('donate.bookInformation')}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">{t('donate.title')} *</Label>
             <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Mathematics Form 4" autoFocus required />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="author">Author</Label>
+            <Label htmlFor="author">{t('donate.author')}</Label>
             <Input id="author" value={author} onChange={(e) => setAuthor(e.target.value)} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="isbn">ISBN (optional)</Label>
+            <Label htmlFor="isbn">{t('donate.isbnOptional')}</Label>
             <Input id="isbn" value={isbn} onChange={(e) => setIsbn(e.target.value)} />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">{t('common.category')}</Label>
             <Select value={category} onValueChange={(v) => setCategory((v as BookCategory) ?? 'other')}>
               <SelectTrigger id="category" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {categoryOptions.map((opt) => (
+                {categoryOptions(dict).map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>
                     {opt.label}
                   </SelectItem>
@@ -176,18 +176,18 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
             </Select>
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="subject">School subject (optional)</Label>
+            <Label htmlFor="subject">{t('donate.schoolSubjectOptional')}</Label>
             <Input id="subject" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Algebra" />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="educationLevel">Education level</Label>
+            <Label htmlFor="educationLevel">{t('common.educationLevel')}</Label>
             <Select value={educationLevel} onValueChange={(v) => setEducationLevel((v as EducationLevel) ?? 'all_levels')}>
               <SelectTrigger id="educationLevel" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {educationLevelOptions.map((opt) => (
+                {educationLevelOptions(dict).map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>
                     {opt.label}
                   </SelectItem>
@@ -196,13 +196,13 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
             </Select>
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="language">Language</Label>
+            <Label htmlFor="language">{t('common.language')}</Label>
             <Select value={language} onValueChange={(v) => setLanguage(v ?? 'fr')}>
               <SelectTrigger id="language" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {languageOptions.map((opt) => (
+                {languageOptions(dict).map((opt) => (
                   <SelectItem key={opt.code} value={opt.code}>
                     {opt.label}
                   </SelectItem>
@@ -212,13 +212,13 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="condition">Condition</Label>
+            <Label htmlFor="condition">{t('common.condition')}</Label>
             <Select value={condition} onValueChange={(v) => setCondition((v as BookCondition) ?? 'good')}>
               <SelectTrigger id="condition" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {conditionOptions.map((opt) => (
+                {conditionOptions(dict).map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>
                     {opt.label}
                   </SelectItem>
@@ -227,19 +227,19 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
             </Select>
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="quantity">Quantity</Label>
+            <Label htmlFor="quantity">{t('common.quantity')}</Label>
             <Input id="quantity" type="number" min={1} value={quantity} onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))} />
           </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="description">Description (optional)</Label>
-          <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Anything a beneficiary should know" />
+          <Label htmlFor="description">{t('donate.descriptionOptional')}</Label>
+          <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t('donate.descriptionPlaceholder')} />
         </div>
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className="font-serif text-xl">Photos</h2>
+        <h2 className="font-serif text-xl">{t('donate.photos')}</h2>
         <div className="flex flex-wrap gap-3">
           {photos.map((photo, index) => (
             <div key={photo.preview} className="relative size-24 overflow-hidden rounded-lg ring-1 ring-border">
@@ -257,26 +257,26 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
           {photos.length < 5 && (
             <label className="flex size-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:bg-muted">
               <Upload size={18} />
-              <span className="text-[10px]">Add photo</span>
+              <span className="text-[10px]">{t('donate.addPhoto')}</span>
               <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFilesSelected(e.target.files)} />
             </label>
           )}
         </div>
-        <p className="text-xs text-muted-foreground">Optional, but listings with photos get requested faster. Up to 5 photos.</p>
+        <p className="text-xs text-muted-foreground">{t('donate.photosHint')}</p>
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className="font-serif text-xl">Location & handover</h2>
+        <h2 className="font-serif text-xl">{t('donate.locationAndHandover')}</h2>
         <LocationPicker value={location} onChange={setLocation} />
 
         <div className="flex flex-col gap-2">
           <label className="flex items-center gap-2 text-sm">
             <Checkbox checked={pickupAvailable} onCheckedChange={(v) => setPickupAvailable(!!v)} />
-            Beneficiary can pick up from me
+            {t('donate.pickupOption')}
           </label>
           <label className="flex items-center gap-2 text-sm">
             <Checkbox checked={dropoffAvailable} onCheckedChange={(v) => setDropoffAvailable(!!v)} />
-            I can drop off to the beneficiary
+            {t('donate.dropoffOption')}
           </label>
         </div>
       </section>

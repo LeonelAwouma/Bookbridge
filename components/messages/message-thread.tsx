@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { sendMessageAction } from '@/lib/actions/messages'
 import { createClient } from '@/lib/supabase/client'
+import { useI18n } from '@/lib/i18n/provider'
 import type { Message } from '@/lib/supabase/types'
 
 export function MessageThread({
@@ -19,6 +20,7 @@ export function MessageThread({
   otherParticipantName: string
   initialMessages: Pick<Message, 'id' | 'sender_id' | 'body' | 'created_at'>[]
 }) {
+  const { t } = useI18n()
   const [messages, setMessages] = useState(initialMessages)
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
@@ -79,7 +81,7 @@ export function MessageThread({
         <div ref={bottomRef} />
       </div>
       <form onSubmit={onSubmit} className="flex items-center gap-2 border-t border-border p-3">
-        <Input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Write a message…" />
+        <Input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t('messages.writeMessage')} />
         <Button type="submit" size="icon" disabled={sending} aria-label="Send">
           {sending ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
         </Button>

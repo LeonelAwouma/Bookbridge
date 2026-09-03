@@ -8,6 +8,7 @@ import { getBooks } from '@/lib/supabase/books-queries'
 import { getNeeds } from '@/lib/supabase/needs-queries'
 import { BookCard } from '@/components/books/book-card'
 import { VerificationRequestButton } from '@/components/organizations/verification-request-button'
+import { getServerTranslator } from '@/lib/i18n/server'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -26,6 +27,7 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
     data: { user },
   } = await supabase.auth.getUser()
   const isOwner = user?.id === org.owner_id
+  const { dict, t } = await getServerTranslator()
 
   const [books, needs, { data: campaigns }] = await Promise.all([
     getBooks({ organizationId: org.id, status: ['available', 'requested', 'reserved', 'completed'], limit: 12 }),
@@ -46,13 +48,13 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
             <p className="flex items-center gap-1 text-sm text-muted-foreground">
               <MapPin size={13} /> {org.city}, {org.country}
             </p>
-            <Badge variant="secondary" className="mt-1 capitalize">
-              {org.organization_type}
+            <Badge variant="secondary" className="mt-1">
+              {dict.userTypes[org.organization_type]}
             </Badge>
           </div>
         </div>
         {isOwner && org.verification_status === 'unverified' && <VerificationRequestButton organizationId={org.id} />}
-        {isOwner && org.verification_status === 'pending' && <Badge variant="outline">Verification pending</Badge>}
+        {isOwner && org.verification_status === 'pending' && <Badge variant="outline">{t('verificationStatus.pending')}</Badge>}
       </div>
 
       {org.description && <p className="mt-6 max-w-2xl text-sm leading-relaxed">{org.description}</p>}
@@ -60,15 +62,15 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="rounded-lg border border-border p-4">
           <p className="font-serif text-2xl">{org.books_received_count}</p>
-          <p className="text-xs text-muted-foreground">Books received</p>
+          <p className="text-xs text-muted-foreground">{t('organizations.booksReceived')}</p>
         </div>
         <div className="rounded-lg border border-border p-4">
           <p className="font-serif text-2xl">{org.students_supported_count}</p>
-          <p className="text-xs text-muted-foreground">Students supported</p>
+          <p className="text-xs text-muted-foreground">{t('organizations.studentsSupported')}</p>
         </div>
         <div className="rounded-lg border border-border p-4">
           <p className="font-serif text-2xl">{needs.length}</p>
-          <p className="text-xs text-muted-foreground">Active requests</p>
+          <p className="text-xs text-muted-foreground">{t('organizations.activeRequests')}</p>
         </div>
       </div>
 
@@ -95,10 +97,10 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
       {(isOwner || (campaigns && campaigns.length > 0)) && (
         <section className="mt-10">
           <div className="flex items-center justify-between">
-            <h2 className="font-serif text-xl">Campaigns</h2>
+            <h2 className="font-serif text-xl">{t('organizations.campaigns')}</h2>
             {isOwner && (
               <Link href={`/organizations/${org.id}/campaigns/new`} className="text-sm text-primary hover:underline">
-                + Start a campaign
+                {t('organizations.startCampaign')}
               </Link>
             )}
           </div>
@@ -115,7 +117,7 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
                     <div className="h-full bg-primary" style={{ width: `${progress}%` }} />
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {c.collected_quantity} / {c.goal_quantity} books
+                    {t('campaigns.booksOfGoal', { collected: c.collected_quantity, goal: c.goal_quantity })}
                   </p>
                 </Link>
               )
@@ -126,12 +128,14 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
 
       {needs.length > 0 && (
         <section className="mt-10">
-          <h2 className="font-serif text-xl">Books needed</h2>
+          <h2 className="font-serif text-xl">{t('organizations.booksNeeded')}</h2>
           <div className="needs-grid mt-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
             {needs.map((n) => (
               <Link key={n.id} href={`/requests/${n.id}`} className="need-card">
                 <h3>{n.title}</h3>
-                <p>{n.quantity_needed - n.quantity_fulfilled} books needed</p>
+                <p>
+                  {n.quantity_needed - n.quantity_fulfilled} {t('needs.booksNeededLabel')}
+                </p>
               </Link>
             ))}
           </div>
@@ -140,7 +144,7 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
 
       {books.length > 0 && (
         <section className="mt-10">
-          <h2 className="font-serif text-xl">Books shared</h2>
+          <h2 className="font-serif text-xl">{t('organizations.booksShared')}</h2>
           <div className="book-grid mt-3">
             {books.map((book) => (
               <BookCard key={book.id} book={book} />

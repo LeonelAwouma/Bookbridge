@@ -15,19 +15,24 @@ import { signUpAction } from '@/lib/actions/auth'
 import { signupUserTypes } from '@/lib/data/user-types'
 import { useI18n } from '@/lib/i18n/provider'
 
-const schema = z.object({
-  fullName: z.string().min(2, 'Please enter your full name'),
-  email: z.string().email('Enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  userType: z.enum(['individual', 'school', 'university', 'library', 'ngo', 'association', 'company']),
-})
-
-type FormValues = z.infer<typeof schema>
+type FormValues = {
+  fullName: string
+  email: string
+  password: string
+  userType: 'individual' | 'school' | 'university' | 'library' | 'ngo' | 'association' | 'company'
+}
 
 export function SignupForm() {
-  const { t } = useI18n()
+  const { t, dict } = useI18n()
   const [serverError, setServerError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
+
+  const schema = z.object({
+    fullName: z.string().min(2, t('auth.fullNameError')),
+    email: z.string().email(t('auth.emailError')),
+    password: z.string().min(8, t('auth.passwordMinError')),
+    userType: z.enum(['individual', 'school', 'university', 'library', 'ngo', 'association', 'company']),
+  })
 
   const {
     register,
@@ -97,7 +102,7 @@ export function SignupForm() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {signupUserTypes.map((option) => (
+                    {signupUserTypes(dict).map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>

@@ -11,6 +11,7 @@ import { getCurrentUserAndProfile } from '@/lib/supabase/queries'
 import { categoryOptions, conditionOptions, educationLevelOptions, languageOptions } from '@/lib/data/taxonomy'
 import { majorCities } from '@/lib/data/locations'
 import { distanceKm } from '@/lib/geo'
+import { getServerTranslator } from '@/lib/i18n/server'
 import type { BookCategory, BookCondition, EducationLevel } from '@/lib/supabase/types'
 
 export const metadata: Metadata = { title: 'Find Books — BookBridge' }
@@ -29,6 +30,7 @@ interface SearchParams {
 export default async function BooksPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams
   const { profile } = await getCurrentUserAndProfile()
+  const { dict, t } = await getServerTranslator()
 
   const city = params.city || profile?.city || undefined
   const view = params.view === 'map' ? 'map' : 'list'
@@ -62,9 +64,9 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
     <div className="content-section">
       <div className="section-heading">
         <div>
-          <div className="eyebrow">Discover & share</div>
-          <h1 className="font-serif text-4xl">Find books</h1>
-          <p>{books.length} books available{city ? ` near ${city}` : ''}.</p>
+          <div className="eyebrow">{t('home.exploreEyebrow')}</div>
+          <h1 className="font-serif text-4xl">{t('books.pageTitle')}</h1>
+          <p>{city ? t('books.booksAvailableNear', { count: books.length, city }) : t('books.booksAvailable', { count: books.length })}</p>
         </div>
       </div>
 
@@ -72,47 +74,66 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
         <div className="flex flex-col gap-3 sm:flex-row">
           <label className="search-box flex-1">
             <Search size={18} />
-            <input name="q" defaultValue={params.q} placeholder="Search by title, author, or subject" />
+            <input name="q" defaultValue={params.q} placeholder={t('books.searchPlaceholder')} />
           </label>
-          <Input name="city" defaultValue={city} placeholder="City" className="sm:w-48" />
-          <Button type="submit">Search</Button>
+          <Input name="city" defaultValue={city} placeholder={t('books.cityPlaceholder')} className="sm:w-48" />
+          <Button type="submit">{t('books.search')}</Button>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <FilterSelect name="category" label="Category" value={params.category} options={categoryOptions} />
-          <FilterSelect name="level" label="Education level" value={params.level} options={educationLevelOptions} />
-          <FilterSelect name="language" label="Language" value={params.language} options={languageOptions.map((l) => ({ value: l.code, label: l.label }))} />
-          <FilterSelect name="condition" label="Condition" value={params.condition} options={conditionOptions} />
+          <FilterSelect name="category" label={t('common.category')} value={params.category} options={categoryOptions(dict)} allLabel={t('books.all')} />
+          <FilterSelect
+            name="level"
+            label={t('common.educationLevel')}
+            value={params.level}
+            options={educationLevelOptions(dict)}
+            allLabel={t('books.all')}
+          />
+          <FilterSelect
+            name="language"
+            label={t('common.language')}
+            value={params.language}
+            options={languageOptions(dict).map((l) => ({ value: l.code, label: l.label }))}
+            allLabel={t('books.all')}
+          />
+          <FilterSelect
+            name="condition"
+            label={t('common.condition')}
+            value={params.condition}
+            options={conditionOptions(dict)}
+            allLabel={t('books.all')}
+          />
           <FilterSelect
             name="source"
-            label="Donor type"
+            label={t('books.donorTypeLabel')}
             value={params.source}
             options={[
-              { value: 'individual', label: 'Individuals' },
-              { value: 'organization', label: 'Organizations' },
+              { value: 'individual', label: t('books.individuals') },
+              { value: 'organization', label: t('books.organizationsOption') },
             ]}
+            allLabel={t('books.all')}
           />
         </div>
         {params.view && <input type="hidden" name="view" value={params.view} />}
       </form>
-      <p className="mt-1 text-[11px] text-muted-foreground">Filters apply on submit — press Search after changing them.</p>
+      <p className="mt-1 text-[11px] text-muted-foreground">{t('books.filterHint')}</p>
 
       <div className="explore-toolbar mt-4">
         <div />
         <div className="view-toggle">
           <Link href={buildHref({ view: undefined })} className={view === 'list' ? 'selected' : ''}>
-            <List size={17} /> List
+            <List size={17} /> {t('books.listView')}
           </Link>
           <Link href={buildHref({ view: 'map' })} className={view === 'map' ? 'selected' : ''}>
-            <MapIcon size={17} /> Map
+            <MapIcon size={17} /> {t('books.mapView')}
           </Link>
         </div>
       </div>
 
       {books.length === 0 ? (
         <div className="map-view">
-          <strong>No books match yet</strong>
-          <span>Try a different city or clear some filters — or check back soon.</span>
+          <strong>{t('books.noBooksMatch')}</strong>
+          <span>{t('books.noBooksMatchHint')}</span>
         </div>
       ) : view === 'map' ? (
         <BooksMap books={books} center={[cityCenter.lat, cityCenter.lng]} />
@@ -141,11 +162,13 @@ function FilterSelect({
   label,
   value,
   options,
+  allLabel,
 }: {
   name: string
   label: string
   value?: string
   options: { value: string; label: string }[]
+  allLabel: string
 }) {
   return (
     <Select name={name} defaultValue={value || 'all'}>
@@ -153,7 +176,9 @@ function FilterSelect({
         <SelectValue placeholder={label} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="all">{label}: all</SelectItem>
+        <SelectItem value="all">
+          {label}: {allLabel}
+        </SelectItem>
         {options.map((opt) => (
           <SelectItem key={opt.value} value={opt.value}>
             {opt.label}
@@ -163,3 +188,4 @@ function FilterSelect({
     </Select>
   )
 }
+

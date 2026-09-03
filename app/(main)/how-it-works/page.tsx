@@ -1,39 +1,42 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Gift, MessageCircle, PackageCheck, Search, ShieldCheck, Users } from 'lucide-react'
+import { getServerTranslator } from '@/lib/i18n/server'
 
 export const metadata: Metadata = { title: 'How It Works — BookBridge' }
 
-const donorSteps = [
-  { title: 'Create an account', body: 'Sign up in under a minute — email and a password is all you need.' },
-  { title: 'List your books', body: 'Add photos, condition, subject, and your general location. Takes about two minutes.' },
-  { title: 'Review requests', body: 'Beneficiaries nearby will request your books. Check their profile and accept or decline.' },
-  { title: 'Message & hand over', body: 'Coordinate a safe pickup or drop-off through in-app messaging.' },
-  { title: 'Mark it complete', body: 'Confirm the handover and watch your impact stats grow.' },
-]
+export default async function HowItWorksPage() {
+  const { dict, t } = await getServerTranslator()
 
-const beneficiarySteps = [
-  { title: 'Create a profile', body: 'Tell us your education level or organization and your location.' },
-  { title: 'Search & filter', body: 'Browse books by subject, level, language, or distance — or post what you need.' },
-  { title: 'Request a book', body: 'Send a short note explaining why you need it.' },
-  { title: 'Coordinate & confirm', body: 'Chat with the donor, agree on a handover, and confirm you received the books.' },
-]
+  const donorSteps = [
+    { title: dict.howItWorks.donorStep1Title, body: dict.howItWorks.donorStep1Body },
+    { title: dict.howItWorks.donorStep2Title, body: dict.howItWorks.donorStep2Body },
+    { title: dict.howItWorks.donorStep3Title, body: dict.howItWorks.donorStep3Body },
+    { title: dict.howItWorks.donorStep4Title, body: dict.howItWorks.donorStep4Body },
+    { title: dict.howItWorks.donorStep5Title, body: dict.howItWorks.donorStep5Body },
+  ]
 
-export default function HowItWorksPage() {
+  const beneficiarySteps = [
+    { title: dict.howItWorks.beneficiaryStep1Title, body: dict.howItWorks.beneficiaryStep1Body },
+    { title: dict.howItWorks.beneficiaryStep2Title, body: dict.howItWorks.beneficiaryStep2Body },
+    { title: dict.howItWorks.beneficiaryStep3Title, body: dict.howItWorks.beneficiaryStep3Body },
+    { title: dict.howItWorks.beneficiaryStep4Title, body: dict.howItWorks.beneficiaryStep4Body },
+  ]
+
   return (
     <div className="content-section">
       <div className="section-heading">
         <div>
-          <div className="eyebrow">Simple by design</div>
-          <h1 className="font-serif text-4xl">How BookBridge works</h1>
-          <p>A local, human way to give books a second life — no shipping, no fees.</p>
+          <div className="eyebrow">{t('howItWorks.eyebrow')}</div>
+          <h1 className="font-serif text-4xl">{t('howItWorks.title')}</h1>
+          <p>{t('howItWorks.subtitle')}</p>
         </div>
       </div>
 
       <div className="mt-10 grid gap-10 md:grid-cols-2">
         <div>
           <h2 className="flex items-center gap-2 font-serif text-2xl">
-            <Gift size={20} className="text-primary" /> If you're donating
+            <Gift size={20} className="text-primary" /> {t('howItWorks.ifDonating')}
           </h2>
           <ol className="mt-4 flex flex-col gap-4">
             {donorSteps.map((s, i) => (
@@ -49,13 +52,13 @@ export default function HowItWorksPage() {
             ))}
           </ol>
           <Link href="/donate" className="button button-primary mt-6">
-            Donate books <ArrowRight size={16} />
+            {t('howItWorks.donateBooksCta')} <ArrowRight size={16} />
           </Link>
         </div>
 
         <div>
           <h2 className="flex items-center gap-2 font-serif text-2xl">
-            <Search size={20} className="text-primary" /> If you're looking for books
+            <Search size={20} className="text-primary" /> {t('howItWorks.ifLooking')}
           </h2>
           <ol className="mt-4 flex flex-col gap-4">
             {beneficiarySteps.map((s, i) => (
@@ -71,7 +74,7 @@ export default function HowItWorksPage() {
             ))}
           </ol>
           <Link href="/books" className="button button-secondary mt-6">
-            Find books <ArrowRight size={16} />
+            {t('howItWorks.findBooksCta')} <ArrowRight size={16} />
           </Link>
         </div>
       </div>
@@ -79,30 +82,26 @@ export default function HowItWorksPage() {
       <section className="trust-section mt-12">
         <ShieldCheck size={28} />
         <div>
-          <h2>Meeting up safely</h2>
-          <p>
-            Choose a public, well-lit place — a school, library, or community center works well. Bring someone with you if
-            possible. Keep the conversation inside BookBridge messaging until you're ready to share contact details, and
-            trust your instincts: you can always report or block someone.
-          </p>
+          <h2>{t('howItWorks.safetyTitle')}</h2>
+          <p>{t('howItWorks.safetyBody')}</p>
         </div>
       </section>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-border p-5">
           <PackageCheck size={18} className="text-primary" />
-          <p className="mt-2 font-medium">Pickup or drop-off</p>
-          <p className="text-sm text-muted-foreground">Donors choose what works for them — you'll always know before requesting.</p>
+          <p className="mt-2 font-medium">{t('howItWorks.pickupOrDropoffTitle')}</p>
+          <p className="text-sm text-muted-foreground">{t('howItWorks.pickupOrDropoffBody')}</p>
         </div>
         <div className="rounded-lg border border-border p-5">
           <MessageCircle size={18} className="text-primary" />
-          <p className="mt-2 font-medium">Built-in messaging</p>
-          <p className="text-sm text-muted-foreground">No phone numbers shared until you're both ready.</p>
+          <p className="mt-2 font-medium">{t('howItWorks.messagingTitle')}</p>
+          <p className="text-sm text-muted-foreground">{t('howItWorks.messagingBody')}</p>
         </div>
         <div className="rounded-lg border border-border p-5">
           <Users size={18} className="text-primary" />
-          <p className="mt-2 font-medium">A trusted community</p>
-          <p className="text-sm text-muted-foreground">Ratings, verified organizations, and moderation keep exchanges safe.</p>
+          <p className="mt-2 font-medium">{t('howItWorks.communityTitle')}</p>
+          <p className="text-sm text-muted-foreground">{t('howItWorks.communityBody')}</p>
         </div>
       </div>
     </div>
