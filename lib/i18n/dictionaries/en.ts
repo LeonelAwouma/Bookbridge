@@ -450,6 +450,8 @@ const en = {
   settings: {
     title: 'Settings',
     subtitle: 'Manage your profile and location. Use the language icon in the header to switch EN/FR.',
+    myAccount: 'My account',
+    viewPublicProfile: 'View my public profile',
     fullName: 'Full name',
     bio: 'Bio',
     phone: 'Phone (private, only shared after a request is accepted)',

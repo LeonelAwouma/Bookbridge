@@ -5,15 +5,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Bell, BookOpen, Gift, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { logoutAction } from '@/lib/actions/auth'
 import { useI18n } from '@/lib/i18n/provider'
 import type { Profile } from '@/lib/supabase/types'
 import { LanguageSwitcher } from './language-switcher'
@@ -75,34 +66,16 @@ export function SiteHeader({ profile, unreadCount }: { profile: Profile | null; 
               <Bell size={19} />
               {unreadCount > 0 && <i />}
             </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="outline-none" aria-label={profile.full_name}>
-                <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-sm font-medium text-muted-foreground ring-1 ring-border">
-                  {profile.avatar_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={profile.avatar_url} alt={profile.full_name} className="size-full object-cover" />
-                  ) : (
-                    initials(profile.full_name)
-                  )}
-                </span>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>{profile.full_name}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem render={<Link href="/dashboard">{t('nav.dashboard')}</Link>} />
-                <DropdownMenuItem render={<Link href="/dashboard/donations">{t('nav.myDonations')}</Link>} />
-                <DropdownMenuItem render={<Link href="/dashboard/requests">{t('nav.myRequests')}</Link>} />
-                <DropdownMenuItem render={<Link href="/messages">{t('nav.messages')}</Link>} />
-                <DropdownMenuItem render={<Link href="/saved">{t('nav.savedBooks')}</Link>} />
-                <DropdownMenuItem render={<Link href={`/profile/${profile.id}`}>{t('nav.profile')}</Link>} />
-                <DropdownMenuItem render={<Link href="/settings">{t('nav.settings')}</Link>} />
-                {profile.is_admin && <DropdownMenuItem render={<Link href="/admin">{t('nav.admin')}</Link>} />}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive" onClick={() => logoutAction()}>
-                  {t('nav.logout')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Link href="/settings" aria-label={t('nav.settings')}>
+              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-sm font-medium text-muted-foreground ring-1 ring-border">
+                {profile.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={profile.avatar_url} alt={profile.full_name} className="size-full object-cover" />
+                ) : (
+                  initials(profile.full_name)
+                )}
+              </span>
+            </Link>
           </>
         ) : (
           <div className="hidden items-center gap-2 md:flex">

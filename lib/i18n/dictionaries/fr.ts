@@ -452,6 +452,8 @@ const fr: Dictionary = {
   settings: {
     title: 'Paramètres',
     subtitle: 'Gérez votre profil et votre localisation. Utilisez l’icône de langue dans l’en-tête pour basculer EN/FR.',
+    myAccount: 'Mon compte',
+    viewPublicProfile: 'Voir mon profil public',
     fullName: 'Nom complet',
     bio: 'Bio',
     phone: 'Téléphone (privé, partagé seulement après acceptation d’une demande)',

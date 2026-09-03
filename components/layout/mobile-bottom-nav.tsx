@@ -15,7 +15,7 @@ export function MobileBottomNav({ profile }: { profile: Profile | null }) {
     { href: '/books', icon: Search, label: t('nav.search') },
     { href: '/donate', icon: PlusCircle, label: t('nav.donate'), primary: true },
     { href: '/messages', icon: MessageCircle, label: t('nav.messages') },
-    { href: profile ? `/profile/${profile.id}` : '/login', icon: User, label: t('nav.profile') },
+    { href: profile ? '/settings' : '/login', icon: User, label: t('nav.profile') },
   ]
 
   return (
