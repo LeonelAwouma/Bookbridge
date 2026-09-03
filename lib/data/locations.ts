@@ -80,6 +80,60 @@ export const countries: CountryData[] = [
     ],
   },
   {
+    code: 'FR',
+    name: 'France',
+    currency: 'EUR',
+    regions: [
+      { name: 'Île-de-France', cities: ['Paris', 'Boulogne-Billancourt', 'Saint-Denis'] },
+      { name: 'Auvergne-Rhône-Alpes', cities: ['Lyon', 'Grenoble'] },
+      { name: "Provence-Alpes-Côte d'Azur", cities: ['Marseille', 'Nice'] },
+      { name: 'Occitanie', cities: ['Toulouse', 'Montpellier'] },
+      { name: 'Nouvelle-Aquitaine', cities: ['Bordeaux'] },
+      { name: 'Hauts-de-France', cities: ['Lille'] },
+      { name: 'Grand Est', cities: ['Strasbourg'] },
+    ],
+  },
+  {
+    code: 'BE',
+    name: 'Belgium',
+    currency: 'EUR',
+    regions: [
+      { name: 'Brussels-Capital', cities: ['Brussels'] },
+      { name: 'Flanders', cities: ['Antwerp', 'Ghent'] },
+      { name: 'Wallonia', cities: ['Liège', 'Charleroi'] },
+    ],
+  },
+  {
+    code: 'CH',
+    name: 'Switzerland',
+    currency: 'CHF',
+    regions: [
+      { name: 'Geneva', cities: ['Geneva'] },
+      { name: 'Vaud', cities: ['Lausanne'] },
+      { name: 'Zurich', cities: ['Zurich'] },
+    ],
+  },
+  {
+    code: 'DE',
+    name: 'Germany',
+    currency: 'EUR',
+    regions: [
+      { name: 'Berlin', cities: ['Berlin'] },
+      { name: 'Bavaria', cities: ['Munich'] },
+      { name: 'North Rhine-Westphalia', cities: ['Cologne', 'Düsseldorf'] },
+      { name: 'Hesse', cities: ['Frankfurt'] },
+    ],
+  },
+  {
+    code: 'GB',
+    name: 'United Kingdom',
+    currency: 'GBP',
+    regions: [
+      { name: 'England', cities: ['London', 'Manchester', 'Birmingham'] },
+      { name: 'Scotland', cities: ['Edinburgh', 'Glasgow'] },
+    ],
+  },
+  {
     code: 'OTHER',
     name: 'Other',
     currency: 'USD',
@@ -104,4 +158,9 @@ export const majorCities = [
   { city: 'Accra', country: 'Ghana', lat: 5.6037, lng: -0.187 },
   { city: 'Nairobi', country: 'Kenya', lat: -1.2921, lng: 36.8219 },
   { city: 'Kigali', country: 'Rwanda', lat: -1.9441, lng: 30.0619 },
+  { city: 'Paris', country: 'France', lat: 48.8566, lng: 2.3522 },
+  { city: 'Brussels', country: 'Belgium', lat: 50.8503, lng: 4.3517 },
+  { city: 'Geneva', country: 'Switzerland', lat: 46.2044, lng: 6.1432 },
+  { city: 'Berlin', country: 'Germany', lat: 52.52, lng: 13.405 },
+  { city: 'London', country: 'United Kingdom', lat: 51.5074, lng: -0.1278 },
 ]
