@@ -30,6 +30,11 @@ export function MessageThread({
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const messagesRef = useRef(messages)
+
+  useEffect(() => {
+    messagesRef.current = messages
+  }, [messages])
 
   useEffect(() => {
     const supabase = createClient()
@@ -43,10 +48,35 @@ export function MessageThread({
           setMessages((prev) => (prev.some((m) => m.id === newMessage.id) ? prev : [...prev, newMessage]))
         },
       )
-      .subscribe()
+      .subscribe((status) => {
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          console.error('Realtime subscription failed for conversation', conversationId, status)
+        }
+      })
+
+    // Realtime delivery isn't guaranteed on every network/proxy setup, so poll
+    // as a fallback to make sure the thread never gets stuck without a manual refresh.
+    const poll = setInterval(async () => {
+      const last = messagesRef.current[messagesRef.current.length - 1]
+      let query = supabase
+        .from('messages')
+        .select('id, sender_id, body, created_at')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true })
+      if (last) query = query.gt('created_at', last.created_at)
+      const { data } = await query
+      if (data && data.length > 0) {
+        setMessages((prev) => {
+          const existingIds = new Set(prev.map((m) => m.id))
+          const fresh = data.filter((m) => !existingIds.has(m.id))
+          return fresh.length ? [...prev, ...fresh] : prev
+        })
+      }
+    }, 4000)
 
     return () => {
       supabase.removeChannel(channel)
+      clearInterval(poll)
     }
   }, [conversationId])
 
