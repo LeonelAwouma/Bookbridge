@@ -57,7 +57,7 @@ export function SiteHeader({ profile, unreadCount }: { profile: Profile | null; 
 
         {profile ? (
           <>
-            <Link href="/donate" className="hidden md:inline-flex">
+            <Link href="/donate" className="hidden min-[1200px]:inline-flex">
               <Button size="sm">
                 <Gift size={15} /> {t('nav.donate')}
               </Button>
@@ -78,7 +78,7 @@ export function SiteHeader({ profile, unreadCount }: { profile: Profile | null; 
             </Link>
           </>
         ) : (
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="hidden items-center gap-2 min-[1200px]:flex">
             <Link href="/login">
               <Button variant="ghost" size="sm">
                 {t('nav.login')}
