@@ -9,6 +9,9 @@ __v0_jsx-dev-runtime.ts
 # Environment variables
 .env*.local
 
+# Claude Code local settings
+.claude/settings.local.json
+
 # Common ignores
 node_modules
 .next/
