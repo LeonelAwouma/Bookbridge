@@ -25,6 +25,9 @@ function mapAuthError(error: { message: string; code?: string }, locale: string)
   if (msg.includes('email not confirmed')) {
     return translateFor(locale, 'auth.emailNotConfirmedError')
   }
+  if (error.code === 'otp_expired' || msg.includes('token has expired') || msg.includes('expired or is invalid')) {
+    return translateFor(locale, 'auth.otpInvalidError')
+  }
   return error.message
 }
 
@@ -79,17 +82,28 @@ export async function logoutAction() {
 export async function requestPasswordResetAction(input: { email: string }): Promise<ActionResult> {
   const supabase = await createClient()
   const locale = await getServerLocale()
-  const { error } = await supabase.auth.resetPasswordForEmail(input.email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/auth/confirm?next=/reset-password`,
-  })
+  const { error } = await supabase.auth.resetPasswordForEmail(input.email)
   if (error) return { error: mapAuthError(error, locale) }
   return { success: true }
 }
 
-export async function updatePasswordAction(input: { password: string }): Promise<ActionResult> {
+export async function verifyPasswordResetAction(input: {
+  email: string
+  token: string
+  password: string
+}): Promise<ActionResult> {
   const supabase = await createClient()
   const locale = await getServerLocale()
-  const { error } = await supabase.auth.updateUser({ password: input.password })
-  if (error) return { error: mapAuthError(error, locale) }
+
+  const { error: verifyError } = await supabase.auth.verifyOtp({
+    email: input.email,
+    token: input.token,
+    type: 'recovery',
+  })
+  if (verifyError) return { error: mapAuthError(verifyError, locale) }
+
+  const { error: updateError } = await supabase.auth.updateUser({ password: input.password })
+  if (updateError) return { error: mapAuthError(updateError, locale) }
+
   return { success: true }
 }

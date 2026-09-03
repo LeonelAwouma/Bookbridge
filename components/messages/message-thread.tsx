@@ -62,7 +62,12 @@ export function MessageThread({
     setSending(true)
     const result = await sendMessageAction({ conversationId, body })
     setSending(false)
-    if (result.error) setMessages((prev) => prev)
+    if (result.error || !result.message) {
+      setDraft(body)
+      return
+    }
+    const sent = result.message
+    setMessages((prev) => (prev.some((m) => m.id === sent.id) ? prev : [...prev, sent]))
   }
 
   return (

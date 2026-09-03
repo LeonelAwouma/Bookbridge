@@ -4,8 +4,11 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { translateFor } from '@/lib/i18n/server'
 import type { ActionResult } from './auth'
+import type { Message } from '@/lib/supabase/types'
 
-export async function sendMessageAction(input: { conversationId: string; body: string }): Promise<ActionResult> {
+export async function sendMessageAction(
+  input: { conversationId: string; body: string },
+): Promise<ActionResult & { message?: Pick<Message, 'id' | 'sender_id' | 'body' | 'created_at'> }> {
   const supabase = await createClient()
   const {
     data: { user },
@@ -13,11 +16,15 @@ export async function sendMessageAction(input: { conversationId: string; body: s
   if (!user) return { error: 'Not authenticated' }
   if (!input.body.trim()) return { error: 'Message cannot be empty' }
 
-  const { error } = await supabase.from('messages').insert({
-    conversation_id: input.conversationId,
-    sender_id: user.id,
-    body: input.body.trim(),
-  })
+  const { data: inserted, error } = await supabase
+    .from('messages')
+    .insert({
+      conversation_id: input.conversationId,
+      sender_id: user.id,
+      body: input.body.trim(),
+    })
+    .select('id, sender_id, body, created_at')
+    .single()
 
   if (error) return { error: error.message }
 
@@ -49,7 +56,7 @@ export async function sendMessageAction(input: { conversationId: string; body: s
   }
 
   revalidatePath(`/messages/${input.conversationId}`)
-  return { success: true }
+  return { success: true, message: inserted }
 }
 
 export async function startBookConversationAction(bookId: string): Promise<ActionResult & { conversationId?: string }> {
