@@ -3,12 +3,18 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DonateForm } from '@/components/donate/donate-form'
 import { emptyLocation } from '@/components/location/location-picker'
+import type { BookCategory, EducationLevel } from '@/lib/supabase/types'
 
 export const metadata: Metadata = {
   title: 'Donate Books — BookBridge',
 }
 
-export default async function DonatePage() {
+interface DonatePageProps {
+  searchParams: Promise<{ category?: string; level?: string; subject?: string }>
+}
+
+export default async function DonatePage({ searchParams }: DonatePageProps) {
+  const prefill = await searchParams
   const supabase = await createClient()
   const {
     data: { user },
@@ -37,7 +43,16 @@ export default async function DonatePage() {
         <h1 className="mt-2 font-serif text-3xl sm:text-4xl">Donate books</h1>
         <p className="mt-2 text-sm text-muted-foreground">Takes about two minutes. Your exact address stays private.</p>
       </div>
-      <DonateForm userId={user.id} initialLocation={initialLocation} organizations={organizations ?? []} />
+      <DonateForm
+        userId={user.id}
+        initialLocation={initialLocation}
+        organizations={organizations ?? []}
+        prefill={{
+          category: prefill.category as BookCategory | undefined,
+          educationLevel: prefill.level as EducationLevel | undefined,
+          subject: prefill.subject,
+        }}
+      />
     </div>
   )
 }

@@ -22,18 +22,19 @@ interface DonateFormProps {
   userId: string
   initialLocation: LocationValue
   organizations: { id: string; name: string }[]
+  prefill?: { category?: BookCategory; educationLevel?: EducationLevel; subject?: string }
 }
 
-export function DonateForm({ userId, initialLocation, organizations }: DonateFormProps) {
+export function DonateForm({ userId, initialLocation, organizations, prefill }: DonateFormProps) {
   const { t } = useI18n()
   const router = useRouter()
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [isbn, setIsbn] = useState('')
-  const [category, setCategory] = useState<BookCategory>('other')
-  const [subject, setSubject] = useState('')
-  const [educationLevel, setEducationLevel] = useState<EducationLevel>('all_levels')
+  const [category, setCategory] = useState<BookCategory>(prefill?.category ?? 'other')
+  const [subject, setSubject] = useState(prefill?.subject ?? '')
+  const [educationLevel, setEducationLevel] = useState<EducationLevel>(prefill?.educationLevel ?? 'all_levels')
   const [language, setLanguage] = useState('fr')
   const [condition, setCondition] = useState<BookCondition>('good')
   const [quantity, setQuantity] = useState(1)
