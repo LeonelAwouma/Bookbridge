@@ -61,7 +61,7 @@ export async function logoutAction() {
 export async function requestPasswordResetAction(input: { email: string }): Promise<ActionResult> {
   const supabase = await createClient()
   const { error } = await supabase.auth.resetPasswordForEmail(input.email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/reset-password`,
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/auth/confirm?next=/reset-password`,
   })
   if (error) return { error: error.message }
   return { success: true }
