@@ -299,6 +299,7 @@ const en = {
     photos: 'Photos',
     addPhoto: 'Add photo',
     photosHint: 'Optional, but listings with photos get requested faster. Up to 3 photos.',
+    photosSourceHint: 'We prefer real photos of the book, but you can also use photos found online.',
     locationAndHandover: 'Location & handover',
     pickupOption: 'Beneficiary can pick up from me',
     dropoffOption: 'I can drop off to the beneficiary',

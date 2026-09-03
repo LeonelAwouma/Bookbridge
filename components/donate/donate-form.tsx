@@ -241,28 +241,42 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
       <section className="flex flex-col gap-4">
         <h2 className="font-serif text-xl">{t('donate.photos')}</h2>
         <div className="flex flex-wrap gap-3">
-          {photos.map((photo, index) => (
-            <div key={photo.preview} className="relative size-24 overflow-hidden rounded-lg ring-1 ring-border">
-              <Image src={photo.preview} alt="" fill className="object-cover" unoptimized />
-              <button
-                type="button"
-                onClick={() => removePhoto(index)}
-                className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white"
-                aria-label="Remove photo"
+          {[0, 1, 2].map((index) => {
+            const photo = photos[index]
+            if (photo) {
+              return (
+                <div key={photo.preview} className="relative size-24 overflow-hidden rounded-lg ring-1 ring-border">
+                  <Image src={photo.preview} alt="" fill className="object-cover" unoptimized />
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(index)}
+                    className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white"
+                    aria-label="Remove photo"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              )
+            }
+            const isNextSlot = index === photos.length
+            return (
+              <label
+                key={index}
+                className={
+                  isNextSlot
+                    ? 'flex size-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:bg-muted'
+                    : 'flex size-24 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground/40'
+                }
               >
-                <X size={12} />
-              </button>
-            </div>
-          ))}
-          {photos.length < 3 && (
-            <label className="flex size-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:bg-muted">
-              <Upload size={18} />
-              <span className="text-[10px]">{t('donate.addPhoto')}</span>
-              <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFilesSelected(e.target.files)} />
-            </label>
-          )}
+                <Upload size={18} />
+                <span className="text-[10px]">{t('donate.addPhoto')}</span>
+                {isNextSlot && <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFilesSelected(e.target.files)} />}
+              </label>
+            )
+          })}
         </div>
         <p className="text-xs text-muted-foreground">{t('donate.photosHint')}</p>
+        <p className="text-xs text-muted-foreground">{t('donate.photosSourceHint')}</p>
       </section>
 
       <section className="flex flex-col gap-4">

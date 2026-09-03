@@ -301,6 +301,7 @@ const fr: Dictionary = {
     photos: 'Photos',
     addPhoto: 'Ajouter une photo',
     photosHint: 'Optionnel, mais les annonces avec photos sont demandées plus vite. Jusqu’à 3 photos.',
+    photosSourceHint: 'Nous privilégions des photos réelles du livre, mais vous pouvez aussi utiliser des photos trouvées sur Internet.',
     locationAndHandover: 'Localisation & remise',
     pickupOption: 'Le bénéficiaire peut venir chercher chez moi',
     dropoffOption: 'Je peux livrer au bénéficiaire',
