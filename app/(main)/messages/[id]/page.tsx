@@ -20,6 +20,8 @@ export default async function ConversationPage({ params }: { params: Promise<{ i
         conversationId={id}
         currentUserId={user.id}
         otherParticipantName={detail.otherProfile?.full_name ?? 'BookBridge user'}
+        bookTitle={detail.bookTitle}
+        bookId={detail.bookId}
         initialMessages={detail.messages}
       />
     </div>

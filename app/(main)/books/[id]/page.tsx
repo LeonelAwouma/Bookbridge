@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server'
 import { categoryLabel, conditionLabel, educationLevelLabel } from '@/lib/data/taxonomy'
 import { getServerTranslator } from '@/lib/i18n/server'
 import { RequestBookDialog } from '@/components/books/request-book-dialog'
+import { MessageOwnerButton } from '@/components/books/message-owner-button'
 import { ReportButton } from '@/components/trust/report-button'
 import { DonationConfirmationToast } from '@/components/books/donation-confirmation-toast'
 
@@ -126,7 +127,12 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
           {book.description && <p className="text-sm leading-relaxed">{book.description}</p>}
 
           <div className="mt-2 flex flex-col gap-3">
-            {canRequest && <RequestBookDialog bookId={book.id} maxQuantity={book.quantity_available || 1} bookTitle={book.title} />}
+            {canRequest && (
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <RequestBookDialog bookId={book.id} maxQuantity={book.quantity_available || 1} bookTitle={book.title} />
+                <MessageOwnerButton bookId={book.id} />
+              </div>
+            )}
             {isOwner && (
               <Link href="/dashboard/donations" className="text-sm font-medium text-primary hover:underline">
                 {t('books.manageRequestsLink')}

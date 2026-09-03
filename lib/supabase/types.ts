@@ -160,6 +160,7 @@ export type DonationRequest = {
 export type Conversation = {
   id: string
   donation_request_id: string | null
+  book_id: string | null
   created_at: string
 }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { Send, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,11 +14,15 @@ export function MessageThread({
   conversationId,
   currentUserId,
   otherParticipantName,
+  bookTitle,
+  bookId,
   initialMessages,
 }: {
   conversationId: string
   currentUserId: string
   otherParticipantName: string
+  bookTitle?: string | null
+  bookId?: string | null
   initialMessages: Pick<Message, 'id' | 'sender_id' | 'body' | 'created_at'>[]
 }) {
   const { t } = useI18n()
@@ -62,7 +67,21 @@ export function MessageThread({
 
   return (
     <div className="flex h-[70vh] flex-col rounded-lg border border-border">
-      <div className="border-b border-border p-3 text-sm font-medium">{otherParticipantName}</div>
+      <div className="border-b border-border p-3">
+        <p className="text-sm font-medium">{otherParticipantName}</p>
+        {bookTitle && (
+          <p className="text-xs text-muted-foreground">
+            {t('messages.regarding')}{' '}
+            {bookId ? (
+              <Link href={`/books/${bookId}`} className="text-primary hover:underline">
+                {bookTitle}
+              </Link>
+            ) : (
+              bookTitle
+            )}
+          </p>
+        )}
+      </div>
       <div className="flex-1 space-y-2 overflow-y-auto p-4">
         {messages.map((m) => {
           const mine = m.sender_id === currentUserId

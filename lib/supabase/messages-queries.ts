@@ -24,7 +24,7 @@ export async function getConversations(userId: string): Promise<ConversationSumm
   const lastReadByConv = new Map(participantRows.map((r) => [r.conversation_id, r.last_read_at]))
 
   const [{ data: conversations }, { data: allParticipants }, { data: messages }] = await Promise.all([
-    supabase.from('conversations').select('id, donation_request_id, created_at').in('id', conversationIds),
+    supabase.from('conversations').select('id, donation_request_id, book_id, created_at').in('id', conversationIds),
     supabase.from('conversation_participants').select('conversation_id, profile_id').in('conversation_id', conversationIds),
     supabase.from('messages').select('conversation_id, body, sender_id, created_at').in('conversation_id', conversationIds).order('created_at', { ascending: false }),
   ])
@@ -33,10 +33,12 @@ export async function getConversations(userId: string): Promise<ConversationSumm
   const { data: requests } = requestIds.length
     ? await supabase.from('donation_requests').select('id, book_id').in('id', requestIds)
     : { data: [] }
-  const bookIds = [...new Set((requests ?? []).map((r) => r.book_id))]
+  const bookIdByRequest = new Map(requests?.map((r) => [r.id, r.book_id]) ?? [])
+
+  const directBookIds = (conversations ?? []).map((c) => c.book_id).filter((v): v is string => !!v)
+  const bookIds = [...new Set([...(requests ?? []).map((r) => r.book_id), ...directBookIds])]
   const { data: books } = bookIds.length ? await supabase.from('books').select('id, title').in('id', bookIds) : { data: [] }
   const bookById = new Map((books ?? []).map((b) => [b.id, b.title]))
-  const bookTitleByRequest = new Map((requests ?? []).map((r) => [r.id, bookById.get(r.book_id) ?? null]))
 
   const otherProfileIds = new Set<string>()
   const otherByConv = new Map<string, string>()
@@ -61,10 +63,11 @@ export async function getConversations(userId: string): Promise<ConversationSumm
       const last = lastMessageByConv.get(c.id)
       const lastReadAt = lastReadByConv.get(c.id)
       const otherId = otherByConv.get(c.id) ?? ''
+      const bookId = c.book_id ?? (c.donation_request_id ? bookIdByRequest.get(c.donation_request_id) : null)
       return {
         id: c.id,
         donationRequestId: c.donation_request_id,
-        bookTitle: c.donation_request_id ? bookTitleByRequest.get(c.donation_request_id) ?? null : null,
+        bookTitle: bookId ? bookById.get(bookId) ?? null : null,
         otherParticipantName: profileById.get(otherId) ?? 'BookBridge user',
         otherParticipantId: otherId,
         lastMessage: last?.body ?? null,
@@ -87,15 +90,23 @@ export async function getConversationDetail(conversationId: string, userId: stri
 
   if (!participant) return null
 
-  const [{ data: messages }, { data: participants }] = await Promise.all([
+  const [{ data: messages }, { data: participants }, { data: conversation }] = await Promise.all([
     supabase.from('messages').select('id, sender_id, body, created_at').eq('conversation_id', conversationId).order('created_at'),
     supabase.from('conversation_participants').select('profile_id').eq('conversation_id', conversationId),
+    supabase.from('conversations').select('book_id, donation_request_id').eq('id', conversationId).single(),
   ])
 
   const otherId = participants?.find((p) => p.profile_id !== userId)?.profile_id
   const { data: otherProfile } = otherId ? await supabase.from('profiles').select('id, full_name, avatar_url').eq('id', otherId).single() : { data: null }
 
+  let bookId = conversation?.book_id ?? null
+  if (!bookId && conversation?.donation_request_id) {
+    const { data: request } = await supabase.from('donation_requests').select('book_id').eq('id', conversation.donation_request_id).maybeSingle()
+    bookId = request?.book_id ?? null
+  }
+  const { data: book } = bookId ? await supabase.from('books').select('id, title').eq('id', bookId).maybeSingle() : { data: null }
+
   await supabase.from('conversation_participants').update({ last_read_at: new Date().toISOString() }).eq('conversation_id', conversationId).eq('profile_id', userId)
 
-  return { messages: messages ?? [], otherProfile }
+  return { messages: messages ?? [], otherProfile, bookTitle: book?.title ?? null, bookId: book?.id ?? null }
 }

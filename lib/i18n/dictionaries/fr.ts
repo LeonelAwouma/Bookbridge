@@ -266,6 +266,7 @@ const fr: Dictionary = {
     pickupAvailable: 'Retrait possible',
     dropoffAvailable: 'Livraison possible',
     requestThisBook: 'Demander ce livre',
+    messageOwner: 'Contacter le donateur',
     manageRequestsLink: 'Gérer les demandes pour ce livre →',
     loginToRequest: 'Connectez-vous pour demander ce livre',
     verifiedOrganization: 'Organisation vérifiée',
@@ -338,8 +339,9 @@ const fr: Dictionary = {
   messages: {
     title: 'Messages',
     noConversations: 'Aucune conversation pour le moment',
-    noConversationsHint: 'Les messages s’ouvrent une fois qu’une demande de don est acceptée.',
+    noConversationsHint: 'Contactez le détenteur d’un livre depuis sa fiche pour démarrer une conversation.',
     writeMessage: 'Écrire un message…',
+    regarding: 'À propos de :',
   },
   notifications: {
     title: 'Notifications',

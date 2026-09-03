@@ -264,6 +264,7 @@ const en = {
     pickupAvailable: 'Pickup available',
     dropoffAvailable: 'Drop-off available',
     requestThisBook: 'Request this book',
+    messageOwner: 'Message the donor',
     manageRequestsLink: 'Manage requests for this book →',
     loginToRequest: 'Log in to request this book',
     verifiedOrganization: 'Verified organization',
@@ -336,8 +337,9 @@ const en = {
   messages: {
     title: 'Messages',
     noConversations: 'No conversations yet',
-    noConversationsHint: 'Messages open once a donation request is accepted.',
+    noConversationsHint: 'Message a book’s owner from its listing to start a conversation.',
     writeMessage: 'Write a message…',
+    regarding: 'Regarding:',
   },
   notifications: {
     title: 'Notifications',
