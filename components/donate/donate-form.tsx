@@ -51,7 +51,7 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
 
   async function onFilesSelected(fileList: FileList | null) {
     if (!fileList) return
-    const files = Array.from(fileList).slice(0, 5 - photos.length)
+    const files = Array.from(fileList).slice(0, 3 - photos.length)
     const compressed = await Promise.all(files.map(compressImage))
     setPhotos((prev) => [...prev, ...compressed.map((file) => ({ file, preview: URL.createObjectURL(file) }))])
   }
@@ -254,7 +254,7 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
               </button>
             </div>
           ))}
-          {photos.length < 5 && (
+          {photos.length < 3 && (
             <label className="flex size-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:bg-muted">
               <Upload size={18} />
               <span className="text-[10px]">{t('donate.addPhoto')}</span>

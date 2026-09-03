@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, BookOpen, Gift, Heart, MapPin, Search, ShieldCheck, Users } from 'lucide-react'
+import { ArrowRight, BookOpen, Gift, Heart, Lock, MapPin, Search, ShieldCheck, Users } from 'lucide-react'
 import { BookCard } from '@/components/books/book-card'
 import { getBooks } from '@/lib/supabase/books-queries'
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries'
@@ -30,7 +30,11 @@ export default async function HomePage() {
   const city = profile?.city || majorCities[0].city
   const { dict, t } = await getServerTranslator()
 
-  const [books, stats, needs] = await Promise.all([getBooks({ city, limit: 8 }), getPlatformStats(), getNeedsNearby(city)])
+  const [books, stats, needs] = await Promise.all([
+    profile ? getBooks({ city, limit: 8 }) : Promise.resolve([]),
+    getPlatformStats(),
+    getNeedsNearby(city),
+  ])
 
   return (
     <main className="min-h-screen bg-background text-foreground" id="top">
@@ -122,7 +126,21 @@ export default async function HomePage() {
             {t('home.seeAllBooks')} <ArrowRight size={15} />
           </Link>
         </div>
-        {books.length === 0 ? (
+        {!profile ? (
+          <div className="map-view">
+            <Lock size={28} />
+            <strong>{t('home.loginToSeeBooks')}</strong>
+            <span>{t('home.loginToSeeBooksHint')}</span>
+            <div className="hero-actions" style={{ marginTop: '1rem' }}>
+              <Link className="button button-primary" href="/login?next=/books">
+                {t('nav.login')}
+              </Link>
+              <Link className="button button-secondary" href="/signup">
+                {t('nav.signup')}
+              </Link>
+            </div>
+          </div>
+        ) : books.length === 0 ? (
           <div className="map-view">
             <MapPin size={28} />
             <strong>{t('home.noBooksYet', { city })}</strong>

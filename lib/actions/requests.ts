@@ -16,6 +16,12 @@ export async function createDonationRequestAction(input: {
   } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  const { data: book } = await supabase.from('books').select('status').eq('id', input.bookId).maybeSingle()
+  if (!book || !['available', 'requested'].includes(book.status)) {
+    const { t } = await getServerTranslator()
+    return { error: t('books.alreadyBooked') }
+  }
+
   const { data: existing } = await supabase
     .from('donation_requests')
     .select('id')
@@ -45,7 +51,13 @@ export async function createDonationRequestAction(input: {
 export async function acceptDonationRequestAction(requestId: string): Promise<ActionResult> {
   const supabase = await createClient()
   const { error } = await supabase.rpc('accept_donation_request', { p_request_id: requestId })
-  if (error) return { error: error.message }
+  if (error) {
+    if (error.message.includes('BOOK_ALREADY_BOOKED')) {
+      const { t } = await getServerTranslator()
+      return { error: t('books.alreadyBooked') }
+    }
+    return { error: error.message }
+  }
   revalidatePath('/dashboard')
   return { success: true }
 }
