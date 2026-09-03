@@ -40,6 +40,7 @@ export function SiteHeader({ profile, unreadCount }: { profile: Profile | null; 
     { href: '/organizations', label: t('nav.organizations') },
     { href: '/campaigns', label: t('nav.campaigns') },
     { href: '/impact', label: t('nav.impact') },
+    { href: '/how-it-works', label: t('nav.howItWorks') },
   ]
 
   return (

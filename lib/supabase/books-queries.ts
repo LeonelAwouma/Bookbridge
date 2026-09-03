@@ -22,6 +22,7 @@ export interface BookFilters {
   limit?: number
   donorId?: string
   organizationId?: string
+  ids?: string[]
 }
 
 export async function getBooks(filters: BookFilters = {}): Promise<BookWithExtras[]> {
@@ -34,6 +35,7 @@ export async function getBooks(filters: BookFilters = {}): Promise<BookWithExtra
     .limit(filters.limit ?? 40)
 
   query = query.in('status', filters.status ?? ['available'])
+  if (filters.ids) query = query.in('id', filters.ids)
   if (filters.country) query = query.eq('country', filters.country)
   if (filters.city) query = query.eq('city', filters.city)
   if (filters.category) query = query.eq('category', filters.category)
