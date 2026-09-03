@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 import { getMyNeeds, getMyRequests } from '@/lib/supabase/dashboard-queries'
 import { ReviewDialog } from '@/components/dashboard/review-dialog'
+import { BackButton } from '@/components/ui/back-button'
 import { getServerTranslator } from '@/lib/i18n/server'
 
 export const metadata: Metadata = { title: 'My Requests — BookBridge' }
@@ -30,6 +31,7 @@ export default async function MyRequestsPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+      <BackButton className="mb-6" fallbackHref="/dashboard" />
       <h1 className="font-serif text-3xl">{t('dashboard.myRequestsTitle')}</h1>
 
       <section className="mt-6">

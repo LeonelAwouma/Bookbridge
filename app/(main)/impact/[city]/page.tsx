@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { BookOpen, Heart, School } from 'lucide-react'
 import { getCityImpact } from '@/lib/supabase/impact-queries'
 import { getServerTranslator } from '@/lib/i18n/server'
+import { BackButton } from '@/components/ui/back-button'
 
 export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
   const { city } = await params
@@ -16,6 +17,7 @@ export default async function CityImpactPage({ params }: { params: Promise<{ cit
 
   return (
     <div className="content-section">
+      <BackButton className="mb-6" fallbackHref="/impact" />
       <div className="eyebrow">{t('impact.localImpact')}</div>
       <h1 className="font-serif text-4xl">{t('impact.impactIn', { city: cityName })}</h1>
 

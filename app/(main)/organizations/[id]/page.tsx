@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Mail, MapPin, Phone, ShieldCheck, User } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { BackButton } from '@/components/ui/back-button'
 import { createClient } from '@/lib/supabase/server'
 import { getBooks } from '@/lib/supabase/books-queries'
 import { getNeeds } from '@/lib/supabase/needs-queries'
@@ -37,6 +38,7 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:py-14">
+      <BackButton className="mb-6" fallbackHref="/organizations" />
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="flex size-16 items-center justify-center rounded-xl bg-muted text-lg font-semibold">{org.name.slice(0, 2).toUpperCase()}</div>

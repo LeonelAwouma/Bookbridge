@@ -12,6 +12,7 @@ import { getServerTranslator } from '@/lib/i18n/server'
 import { RequestBookDialog } from '@/components/books/request-book-dialog'
 import { MessageOwnerButton } from '@/components/books/message-owner-button'
 import { ReportButton } from '@/components/trust/report-button'
+import { BackButton } from '@/components/ui/back-button'
 import { DonationConfirmationToast } from '@/components/books/donation-confirmation-toast'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -37,6 +38,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:py-14">
+      <BackButton className="mb-6" fallbackHref="/books" />
       <Suspense>
         <DonationConfirmationToast />
       </Suspense>

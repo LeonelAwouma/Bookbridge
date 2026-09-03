@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { CalendarClock, Heart, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { BackButton } from '@/components/ui/back-button'
 import { getNeedById } from '@/lib/supabase/needs-queries'
 import { categoryLabel, educationLevelLabel } from '@/lib/data/taxonomy'
 import { getServerTranslator } from '@/lib/i18n/server'
@@ -27,6 +28,7 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:py-14">
+      <BackButton className="mb-6" fallbackHref="/requests" />
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant="secondary">{categoryLabel(dict, need.category)}</Badge>
         <Badge variant="secondary">{educationLevelLabel(dict, need.education_level)}</Badge>

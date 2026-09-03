@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BookOpen, Calendar, MapPin, Star } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { BackButton } from '@/components/ui/back-button'
 import { createClient } from '@/lib/supabase/server'
 import { getBooks } from '@/lib/supabase/books-queries'
 import { BookCard } from '@/components/books/book-card'
@@ -30,6 +31,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+      <BackButton className="mb-6" fallbackHref="/" />
       <div className="flex items-center gap-4">
         <div className="flex size-16 items-center justify-center rounded-full bg-muted text-lg font-semibold">
           {profile.full_name.slice(0, 2).toUpperCase()}

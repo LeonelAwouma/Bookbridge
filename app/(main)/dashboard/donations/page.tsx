@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getMyBooksWithRequests } from '@/lib/supabase/dashboard-queries'
 import { RequestActions } from '@/components/dashboard/request-actions'
 import { ReviewDialog } from '@/components/dashboard/review-dialog'
+import { BackButton } from '@/components/ui/back-button'
 import { getServerTranslator } from '@/lib/i18n/server'
 
 export const metadata: Metadata = { title: 'My Donations — BookBridge' }
@@ -36,6 +37,7 @@ export default async function MyDonationsPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+      <BackButton className="mb-6" fallbackHref="/dashboard" />
       <h1 className="font-serif text-3xl">{t('dashboard.myDonationsTitle')}</h1>
 
       {items.length === 0 ? (

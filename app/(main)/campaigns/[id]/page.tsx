@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { categoryLabel } from '@/lib/data/taxonomy'
 import { getServerTranslator } from '@/lib/i18n/server'
 import { DonateToCampaignDialog } from '@/components/campaigns/donate-to-campaign-dialog'
+import { BackButton } from '@/components/ui/back-button'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -31,6 +32,7 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:py-14">
+      <BackButton className="mb-6" fallbackHref="/campaigns" />
       <div className="eyebrow">{t('campaigns.campaignEyebrow')}</div>
       <h1 className="mt-2 font-serif text-4xl">{campaign.title}</h1>
       {organization && (
