@@ -43,14 +43,18 @@ const en = {
     booksNearSubtitle: 'Find your next read, or help one find its reader.',
     seeAllBooks: 'See all books',
     noBooksYet: 'No books listed near {city} yet',
+    noBooksYetGeneric: 'No books available yet',
     noBooksYetHint: 'Be the first to donate in your area.',
     loginToSeeBooks: 'Log in to see the available books',
     loginToSeeBooksHint: 'The book list is reserved to registered BookBridge members.',
+    booksNearYou: 'Books near you',
+    addLocationPrompt: 'Add your city to see the books closest to you —',
     impactEyebrow: 'Make an impact',
     needsNear: 'Books Needed Near You',
     needsNearSubtitle: 'Somebody is waiting for the right book.',
     seeAllRequests: 'See all requests',
     noOpenRequests: 'No open requests near {city} right now.',
+    noOpenRequestsGeneric: 'No open requests right now.',
     booksNeededCount: '{count} books needed',
     iCanHelp: 'I can help',
     howEyebrow: 'Simple by design',
@@ -89,6 +93,10 @@ const en = {
     noAccount: "Don't have an account?",
     hasAccount: 'Already have an account?',
     checkEmail: 'Check your email to confirm your account.',
+    emailRateLimitError: 'Too many email attempts were made recently. Please wait a few minutes before trying again.',
+    userAlreadyExistsError: 'An account with this email already exists. Try logging in instead.',
+    invalidCredentialsError: 'Incorrect email or password.',
+    emailNotConfirmedError: 'Please confirm your email before logging in — check your inbox.',
     forgotTitle: 'Reset your password',
     forgotSubtitle: "We'll send you a link to choose a new password.",
     forgotSent: 'Check your email for a reset link.',
@@ -562,6 +570,32 @@ const en = {
     dismiss: 'Dismiss',
     noReportsYet: 'No reports yet.',
     by: 'By {name}',
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    lastUpdated: 'Last updated: {date}',
+    intro:
+      'BookBridge connects people who donate books with people who need them. This page explains what data we collect, why, and how you stay in control of it.',
+    section1Heading: 'The data we collect',
+    section1Body:
+      'When you sign up, we store your name, email, and the account type you choose. You can add a bio, phone number, location (country, region, city, neighborhood), and a profile photo. When you list a book or a need, we store the information and photos you provide. Messages exchanged with other members, your reviews, and your reports are also kept so the platform can work as intended.',
+    section2Heading: 'How we use this data',
+    section2Body:
+      'Your information is used to show nearby available books and needs, connect you with other members through messaging, send you notifications about your requests, and calculate your donation stats (books donated, badges earned). Reports are used by our moderation team to keep the community safe.',
+    section3Heading: 'Your location stays approximate',
+    section3Body:
+      'We never share your exact GPS coordinates with other users. The location shown on maps and in search results is intentionally made approximate (randomly offset by a few hundred meters) to protect your precise address. Your exact location is only used to sort results by proximity.',
+    section4Heading: 'What we share — and with whom',
+    section4Body:
+      'Your name, approximate city, and average rating are visible to other members to build trust before an exchange. Your phone number and exact location are never shown publicly. We never sell personal data to third parties. We use Supabase as the technical host for our database and files.',
+    section5Heading: 'Control over your data',
+    section5Body:
+      'You can edit or delete your profile information at any time from Settings. To request an export or full deletion of your account and data, contact us — we will process your request as soon as possible.',
+    section6Heading: 'Security',
+    section6Body:
+      'Access to your data is protected by authentication and strict database-level security rules, ensuring only authorized parties (you, the people you interact with directly, or our moderation team in response to a report) can access it.',
+    contactHeading: 'Contact us',
+    contactBody: 'For any question about this policy or your personal data, contact the BookBridge team — we respond to every request.',
   },
 } as const
 

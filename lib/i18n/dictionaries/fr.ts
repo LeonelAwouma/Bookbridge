@@ -45,14 +45,18 @@ const fr: Dictionary = {
     booksNearSubtitle: 'Trouvez votre prochaine lecture, ou aidez un livre à trouver son lecteur.',
     seeAllBooks: 'Voir tous les livres',
     noBooksYet: 'Aucun livre près de {city} pour l’instant',
+    noBooksYetGeneric: 'Aucun livre disponible pour l’instant',
     noBooksYetHint: 'Soyez le premier à donner dans votre région.',
     loginToSeeBooks: 'Connectez-vous pour voir les livres disponibles',
     loginToSeeBooksHint: 'La liste des livres est réservée aux membres inscrits de BookBridge.',
+    booksNearYou: 'Livres près de chez vous',
+    addLocationPrompt: 'Ajoutez votre ville pour voir les livres les plus proches de chez vous —',
     impactEyebrow: 'Faites la différence',
     needsNear: 'Besoins de livres près de chez vous',
     needsNearSubtitle: 'Quelqu’un attend le bon livre.',
     seeAllRequests: 'Voir toutes les demandes',
     noOpenRequests: 'Aucune demande ouverte près de {city} pour le moment.',
+    noOpenRequestsGeneric: 'Aucune demande ouverte pour le moment.',
     booksNeededCount: '{count} livres nécessaires',
     iCanHelp: 'Je peux aider',
     howEyebrow: 'Simple par nature',
@@ -91,6 +95,10 @@ const fr: Dictionary = {
     noAccount: 'Pas encore de compte ?',
     hasAccount: 'Déjà un compte ?',
     checkEmail: 'Vérifiez votre e-mail pour confirmer votre compte.',
+    emailRateLimitError: 'Trop de tentatives d’envoi d’e-mail ont été effectuées récemment. Merci de patienter quelques minutes avant de réessayer.',
+    userAlreadyExistsError: 'Un compte existe déjà avec cette adresse e-mail. Essayez de vous connecter.',
+    invalidCredentialsError: 'E-mail ou mot de passe incorrect.',
+    emailNotConfirmedError: 'Merci de confirmer votre e-mail avant de vous connecter — vérifiez votre boîte de réception.',
     forgotTitle: 'Réinitialisez votre mot de passe',
     forgotSubtitle: 'Nous vous enverrons un lien pour choisir un nouveau mot de passe.',
     forgotSent: 'Vérifiez votre e-mail pour le lien de réinitialisation.',
@@ -564,6 +572,32 @@ const fr: Dictionary = {
     dismiss: 'Rejeter',
     noReportsYet: 'Aucun signalement pour l’instant.',
     by: 'Par {name}',
+  },
+  privacy: {
+    title: 'Politique de confidentialité',
+    lastUpdated: 'Dernière mise à jour : {date}',
+    intro:
+      'BookBridge met en relation des personnes qui donnent des livres et des personnes qui en ont besoin. Cette page explique quelles données nous collectons, pourquoi, et comment vous gardez le contrôle dessus.',
+    section1Heading: 'Les données que nous collectons',
+    section1Body:
+      'Lors de votre inscription, nous enregistrons votre nom, votre e-mail et le type de compte choisi. Vous pouvez ajouter une bio, un numéro de téléphone, une localisation (pays, région, ville, quartier) et une photo de profil. Lorsque vous publiez un livre ou un besoin, nous stockons les informations et photos que vous fournissez. Les messages échangés avec d’autres membres, vos avis et signalements sont également conservés pour assurer le bon fonctionnement de la plateforme.',
+    section2Heading: 'Comment nous utilisons ces données',
+    section2Body:
+      'Vos informations servent à afficher les livres et besoins disponibles près de chez vous, à vous mettre en relation avec d’autres membres via la messagerie, à vous envoyer des notifications sur vos demandes, et à calculer vos statistiques de don (nombre de livres, badges obtenus). Les signalements sont utilisés par notre équipe de modération pour assurer la sécurité de la communauté.',
+    section3Heading: 'Votre position reste approximative',
+    section3Body:
+      'Nous ne partageons jamais vos coordonnées GPS exactes avec les autres utilisateurs. La position affichée sur les cartes et dans les recherches est volontairement rendue approximative (décalée aléatoirement de quelques centaines de mètres) afin de protéger votre adresse précise. Votre position exacte n’est utilisée que pour trier les résultats par proximité.',
+    section4Heading: 'Ce que nous partageons — et avec qui',
+    section4Body:
+      'Votre nom, votre ville approximative et votre note moyenne sont visibles par les autres membres pour instaurer la confiance avant un échange. Votre numéro de téléphone et votre position exacte ne sont jamais affichés publiquement. Nous ne vendons aucune donnée personnelle à des tiers. Nous utilisons Supabase comme hébergeur technique de notre base de données et de nos fichiers.',
+    section5Heading: 'Le contrôle de vos données',
+    section5Body:
+      'Vous pouvez modifier ou supprimer vos informations de profil à tout moment depuis les Paramètres. Pour demander l’export ou la suppression complète de votre compte et de vos données, contactez-nous — nous traiterons votre demande dans les meilleurs délais.',
+    section6Heading: 'Sécurité',
+    section6Body:
+      'L’accès à vos données est protégé par authentification et des règles de sécurité strictes au niveau de la base de données, garantissant que seules les personnes autorisées (vous-même, vos interlocuteurs directs, ou notre équipe de modération en cas de signalement) peuvent y accéder.',
+    contactHeading: 'Nous contacter',
+    contactBody: 'Pour toute question sur cette politique ou sur vos données personnelles, contactez l’équipe BookBridge — nous répondons à chaque demande.',
   },
 }
 

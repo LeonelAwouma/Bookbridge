@@ -5,7 +5,6 @@ import { getBooks } from '@/lib/supabase/books-queries'
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries'
 import { createClient } from '@/lib/supabase/server'
 import { getServerTranslator } from '@/lib/i18n/server'
-import { majorCities } from '@/lib/data/locations'
 import { initials } from '@/lib/utils'
 
 async function getPlatformStats() {
@@ -39,7 +38,7 @@ async function getNeedsNearby(city?: string) {
 
 export default async function HomePage() {
   const { profile } = await getCurrentUserAndProfile()
-  const city = profile?.city || majorCities[0].city
+  const city = profile?.city || undefined
   const { dict, t } = await getServerTranslator()
 
   const [books, stats, needs, recentDonors] = await Promise.all([
@@ -134,8 +133,16 @@ export default async function HomePage() {
         <div className="section-heading">
           <div>
             <div className="eyebrow">{t('home.exploreEyebrow')}</div>
-            <h2>{t('home.booksNear', { city })}</h2>
+            <h2>{city ? t('home.booksNear', { city }) : t('home.booksNearYou')}</h2>
             <p>{t('home.booksNearSubtitle')}</p>
+            {profile && !city && (
+              <p className="text-xs text-muted-foreground">
+                {t('home.addLocationPrompt')}{' '}
+                <Link href="/settings" className="text-primary hover:underline">
+                  {t('nav.settings')}
+                </Link>
+              </p>
+            )}
           </div>
           <Link href="/books" className="text-button">
             {t('home.seeAllBooks')} <ArrowRight size={15} />
@@ -158,7 +165,7 @@ export default async function HomePage() {
         ) : books.length === 0 ? (
           <div className="map-view">
             <MapPin size={28} />
-            <strong>{t('home.noBooksYet', { city })}</strong>
+            <strong>{city ? t('home.noBooksYet', { city }) : t('home.noBooksYetGeneric')}</strong>
             <span>{t('home.noBooksYetHint')}</span>
           </div>
         ) : (
@@ -182,7 +189,7 @@ export default async function HomePage() {
           </Link>
         </div>
         {needs.length === 0 ? (
-          <p className="muted">{t('home.noOpenRequests', { city })}</p>
+          <p className="muted">{city ? t('home.noOpenRequests', { city }) : t('home.noOpenRequestsGeneric')}</p>
         ) : (
           <div className="needs-grid">
             {needs.map((need) => (
@@ -276,7 +283,7 @@ export default async function HomePage() {
         <div>
           <Link href="/how-it-works">{t('home.footerAbout')}</Link>
           <Link href="/impact">{t('home.footerImpact')}</Link>
-          <Link href="/">{t('home.footerPrivacy')}</Link>
+          <Link href="/privacy">{t('home.footerPrivacy')}</Link>
         </div>
       </footer>
     </main>
