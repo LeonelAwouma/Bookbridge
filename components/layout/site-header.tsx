@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Bell, BookOpen, Gift, Menu, X } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -77,11 +76,15 @@ export function SiteHeader({ profile, unreadCount }: { profile: Profile | null; 
               {unreadCount > 0 && <i />}
             </Link>
             <DropdownMenu>
-              <DropdownMenuTrigger className="outline-none">
-                <Avatar>
-                  <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name} />
-                  <AvatarFallback>{initials(profile.full_name)}</AvatarFallback>
-                </Avatar>
+              <DropdownMenuTrigger className="outline-none" aria-label={profile.full_name}>
+                <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-sm font-medium text-muted-foreground ring-1 ring-border">
+                  {profile.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={profile.avatar_url} alt={profile.full_name} className="size-full object-cover" />
+                  ) : (
+                    initials(profile.full_name)
+                  )}
+                </span>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>{profile.full_name}</DropdownMenuLabel>
