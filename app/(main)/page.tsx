@@ -6,6 +6,7 @@ import { getCurrentUserAndProfile } from '@/lib/supabase/queries'
 import { createClient } from '@/lib/supabase/server'
 import { getServerTranslator } from '@/lib/i18n/server'
 import { majorCities } from '@/lib/data/locations'
+import { initials } from '@/lib/utils'
 
 async function getPlatformStats() {
   const supabase = await createClient()
@@ -15,6 +16,17 @@ async function getPlatformStats() {
     supabase.from('organizations').select('id', { count: 'exact', head: true }),
   ])
   return { books: books ?? 0, donors: donors ?? 0, schools: schools ?? 0 }
+}
+
+async function getRecentDonors() {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .gt('donations_completed_count', 0)
+    .order('updated_at', { ascending: false })
+    .limit(3)
+  return data ?? []
 }
 
 async function getNeedsNearby(city?: string) {
@@ -30,10 +42,11 @@ export default async function HomePage() {
   const city = profile?.city || majorCities[0].city
   const { dict, t } = await getServerTranslator()
 
-  const [books, stats, needs] = await Promise.all([
+  const [books, stats, needs, recentDonors] = await Promise.all([
     profile ? getBooks({ city, limit: 8 }) : Promise.resolve([]),
     getPlatformStats(),
     getNeedsNearby(city),
+    getRecentDonors(),
   ])
 
   return (
@@ -56,15 +69,17 @@ export default async function HomePage() {
               {t('home.ctaFind')} <ArrowRight size={17} />
             </Link>
           </div>
-          <div className="social-proof">
-            <div className="avatar-stack">
-              <span>DA</span>
-              <span>FK</span>
-              <span>MO</span>
-              <span>+</span>
+          {recentDonors.length > 0 && (
+            <div className="social-proof">
+              <div className="avatar-stack">
+                {recentDonors.map((donor) => (
+                  <span key={donor.id}>{initials(donor.full_name)}</span>
+                ))}
+                {stats.donors > recentDonors.length && <span>+</span>}
+              </div>
+              <span>{t('home.booksAlreadyDonated', { count: stats.books })}</span>
             </div>
-            <span>{t('home.booksAlreadyDonated', { count: stats.books })}</span>
-          </div>
+          )}
         </div>
         <div className="hero-art" aria-label="Illustration of books being passed between people">
           <div className="sun-disc" />

@@ -6,17 +6,9 @@ import { usePathname } from 'next/navigation'
 import { Bell, BookOpen, Gift, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useI18n } from '@/lib/i18n/provider'
+import { initials } from '@/lib/utils'
 import type { Profile } from '@/lib/supabase/types'
 import { LanguageSwitcher } from './language-switcher'
-
-function initials(name: string) {
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
-}
 
 export function SiteHeader({ profile, unreadCount }: { profile: Profile | null; unreadCount: number }) {
   const { t } = useI18n()
