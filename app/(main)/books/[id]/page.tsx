@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { BookOpen, MapPin, PackageCheck, ShieldCheck, Truck } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +10,7 @@ import { createClient } from '@/lib/supabase/server'
 import { categoryLabels, conditionLabels, educationLevelLabels } from '@/lib/data/taxonomy'
 import { RequestBookDialog } from '@/components/books/request-book-dialog'
 import { ReportButton } from '@/components/trust/report-button'
+import { DonationConfirmationToast } from '@/components/books/donation-confirmation-toast'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -32,6 +34,9 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:py-14">
+      <Suspense>
+        <DonationConfirmationToast />
+      </Suspense>
       <div className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-3">
           <div className="aspect-[4/3] overflow-hidden rounded-xl bg-muted ring-1 ring-border relative">

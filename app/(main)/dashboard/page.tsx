@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { ArrowRight, BookMarked, Gift, Heart, Inbox, Star, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { userTypeLabels } from '@/lib/data/user-types'
+import { ShareImpactCard } from '@/components/dashboard/share-impact-card'
 
 export const metadata: Metadata = { title: 'Dashboard — BookBridge' }
 
@@ -87,6 +88,8 @@ export default async function DashboardPage() {
           <p className="text-sm text-muted-foreground">Track books you've requested and needs you've posted.</p>
         </Link>
       </div>
+
+      <ShareImpactCard booksDonated={profile.books_donated_count} peopleSupported={profile.people_supported_count} />
 
       {organizations && organizations.length > 0 && (
         <div className="mt-8">
