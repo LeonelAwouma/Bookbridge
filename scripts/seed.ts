@@ -2,8 +2,10 @@
 // Requires the SQL migrations (supabase/migrations/*.sql) to already be applied.
 // Run with: pnpm seed
 
-import 'dotenv/config'
+import { config } from 'dotenv'
 import { createClient } from '@supabase/supabase-js'
+
+config({ path: '.env.local' })
 import type { Database } from '../lib/supabase/types'
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
