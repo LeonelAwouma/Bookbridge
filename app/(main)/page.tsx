@@ -284,6 +284,7 @@ export default async function HomePage() {
           <Link href="/how-it-works">{t('home.footerAbout')}</Link>
           <Link href="/impact">{t('home.footerImpact')}</Link>
           <Link href="/privacy">{t('home.footerPrivacy')}</Link>
+          <span>🇨🇲 Leonel AWOUMA</span>
         </div>
       </footer>
     </main>
