@@ -24,6 +24,7 @@ const fr: Dictionary = {
     donate: 'Donner',
     notifications: 'Notifications',
     admin: 'Admin',
+    terms: 'CGU',
   },
   home: {
     heroEyebrow: 'Donnez une seconde vie à vos livres',
@@ -79,6 +80,7 @@ const fr: Dictionary = {
     footerAbout: 'À propos',
     footerImpact: 'Impact',
     footerPrivacy: 'Confidentialité',
+    footerTerms: 'CGU',
   },
   auth: {
     loginTitle: 'Bon retour',
@@ -92,6 +94,8 @@ const fr: Dictionary = {
     forgotPassword: 'Mot de passe oublié ?',
     noAccount: 'Pas encore de compte ?',
     hasAccount: 'Déjà un compte ?',
+    termsAgreementPrefix: 'En créant un compte, vous acceptez nos',
+    termsAgreementJoiner: 'et notre',
     continueWithGoogle: 'Continuer avec Google',
     orDivider: 'ou',
     checkEmail: 'Vérifiez votre e-mail pour confirmer votre compte.',
@@ -619,6 +623,35 @@ const fr: Dictionary = {
       'L’accès à vos données est protégé par authentification et des règles de sécurité strictes au niveau de la base de données, garantissant que seules les personnes autorisées (vous-même, vos interlocuteurs directs, ou notre équipe de modération en cas de signalement) peuvent y accéder.',
     contactHeading: 'Nous contacter',
     contactBody: 'Pour toute question sur cette politique ou sur vos données personnelles, contactez l’équipe BookBridge — nous répondons à chaque demande.',
+  },
+  terms: {
+    title: 'Conditions générales d’utilisation',
+    lastUpdated: 'Dernière mise à jour : {date}',
+    intro:
+      'En créant un compte ou en utilisant BookBridge, vous acceptez les conditions décrites ci-dessous. Merci de les lire attentivement.',
+    section1Heading: 'Objet du service',
+    section1Body:
+      'BookBridge est une plateforme qui met en relation des personnes souhaitant donner des livres avec des personnes, écoles ou associations qui en ont besoin. BookBridge facilite cette mise en relation mais n’est pas partie à l’échange qui a lieu entre le donateur et le bénéficiaire.',
+    section2Heading: 'Inscription et compte',
+    section2Body:
+      'L’inscription est gratuite et nécessite une adresse e-mail valide. Vous êtes responsable de la confidentialité de vos identifiants et de l’exactitude des informations fournies. Un compte est personnel et ne peut pas être cédé à un tiers.',
+    section3Heading: 'Règles de la communauté',
+    section3Body:
+      'En utilisant BookBridge, vous vous engagez à décrire honnêtement l’état et le contenu des livres proposés, à ne publier aucun contenu illégal, contrefait, offensant ou trompeur, à communiquer avec respect avec les autres membres, et à ne pas utiliser la plateforme à des fins commerciales non autorisées, comme la revente de livres obtenus gratuitement.',
+    section4Heading: 'Fonctionnement des dons',
+    section4Body:
+      'BookBridge ne réalise aucune transaction financière entre utilisateurs : les échanges de livres se font gratuitement, directement entre le donateur et le bénéficiaire. Les campagnes organisées par des organisations portent sur des quantités de livres, jamais sur des sommes d’argent. BookBridge ne garantit pas l’état, la disponibilité ou la remise effective d’un livre : chaque engagement de don reste sous la responsabilité des personnes concernées.',
+    section5Heading: 'Sécurité des remises',
+    section5Body:
+      'Nous recommandons vivement de privilégier les remises en lieu public et en journée. BookBridge ne peut être tenu responsable des dommages, pertes ou incidents survenus lors d’une remise de livres entre utilisateurs.',
+    section6Heading: 'Modération et sanctions',
+    section6Body:
+      'Nous nous réservons le droit de retirer tout contenu ne respectant pas ces conditions, et de suspendre ou résilier un compte en cas de signalement fondé, de comportement frauduleux ou de violation répétée des règles de la communauté.',
+    section7Heading: 'Résiliation et modifications',
+    section7Body:
+      'Vous pouvez supprimer votre compte à tout moment depuis les Paramètres ou en nous contactant. Ces conditions peuvent évoluer avec le service ; la date de dernière mise à jour est indiquée en haut de cette page. Continuer à utiliser BookBridge après une modification vaut acceptation des nouvelles conditions.',
+    contactHeading: 'Nous contacter',
+    contactBody: 'Pour toute question sur ces conditions, contactez l’équipe BookBridge — nous répondons à chaque demande.',
   },
 }
 

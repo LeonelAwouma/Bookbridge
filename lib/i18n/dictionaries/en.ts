@@ -22,6 +22,7 @@ const en = {
     donate: 'Donate',
     notifications: 'Notifications',
     admin: 'Admin',
+    terms: 'Terms',
   },
   home: {
     heroEyebrow: 'Give your books a second life',
@@ -77,6 +78,7 @@ const en = {
     footerAbout: 'About',
     footerImpact: 'Impact',
     footerPrivacy: 'Privacy',
+    footerTerms: 'Terms',
   },
   auth: {
     loginTitle: 'Welcome back',
@@ -90,6 +92,8 @@ const en = {
     forgotPassword: 'Forgot password?',
     noAccount: "Don't have an account?",
     hasAccount: 'Already have an account?',
+    termsAgreementPrefix: 'By creating an account, you agree to our',
+    termsAgreementJoiner: 'and our',
     continueWithGoogle: 'Continue with Google',
     orDivider: 'or',
     checkEmail: 'Check your email to confirm your account.',
@@ -617,6 +621,34 @@ const en = {
       'Access to your data is protected by authentication and strict database-level security rules, ensuring only authorized parties (you, the people you interact with directly, or our moderation team in response to a report) can access it.',
     contactHeading: 'Contact us',
     contactBody: 'For any question about this policy or your personal data, contact the BookBridge team — we respond to every request.',
+  },
+  terms: {
+    title: 'Terms of Service',
+    lastUpdated: 'Last updated: {date}',
+    intro: 'By creating an account or using BookBridge, you agree to the terms described below. Please read them carefully.',
+    section1Heading: 'Purpose of the service',
+    section1Body:
+      'BookBridge is a platform that connects people who want to donate books with people, schools, or associations who need them. BookBridge facilitates this connection but is not a party to the exchange that takes place between the donor and the recipient.',
+    section2Heading: 'Registration and account',
+    section2Body:
+      'Registration is free and requires a valid email address. You are responsible for keeping your credentials confidential and for the accuracy of the information you provide. An account is personal and cannot be transferred to a third party.',
+    section3Heading: 'Community rules',
+    section3Body:
+      'By using BookBridge, you agree to honestly describe the condition and content of the books you list, to never post illegal, counterfeit, offensive, or misleading content, to communicate respectfully with other members, and not to use the platform for unauthorized commercial purposes, such as reselling books obtained for free.',
+    section4Heading: 'How donations work',
+    section4Body:
+      'BookBridge does not process any financial transactions between users: book exchanges happen for free, directly between the donor and the recipient. Campaigns run by organizations track quantities of books, never sums of money. BookBridge does not guarantee the condition, availability, or actual handover of a book — each donation commitment remains the responsibility of the people involved.',
+    section5Heading: 'Handover safety',
+    section5Body:
+      'We strongly recommend meeting in a public place during daylight hours to hand over books. BookBridge cannot be held responsible for any damage, loss, or incident occurring during a handover between users.',
+    section6Heading: 'Moderation and sanctions',
+    section6Body:
+      'We reserve the right to remove any content that does not comply with these terms, and to suspend or terminate an account in the event of a well-founded report, fraudulent behavior, or repeated violation of community rules.',
+    section7Heading: 'Termination and changes',
+    section7Body:
+      'You may delete your account at any time from Settings or by contacting us. These terms may evolve as the service does; the last-updated date is shown at the top of this page. Continuing to use BookBridge after a change means you accept the new terms.',
+    contactHeading: 'Contact us',
+    contactBody: 'For any question about these terms, contact the BookBridge team — we respond to every request.',
   },
 } as const
 

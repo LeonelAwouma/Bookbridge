@@ -130,6 +130,18 @@ export function SignupForm() {
 
         <GoogleAuthButton />
 
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          {t('auth.termsAgreementPrefix')}{' '}
+          <Link href="/terms" className="underline hover:text-primary">
+            {t('nav.terms')}
+          </Link>{' '}
+          {t('auth.termsAgreementJoiner')}{' '}
+          <Link href="/privacy" className="underline hover:text-primary">
+            {t('home.footerPrivacy')}
+          </Link>
+          .
+        </p>
+
         <p className="mt-4 text-center text-sm text-muted-foreground">
           {t('auth.hasAccount')}{' '}
           <Link href="/login" className="font-medium text-primary hover:underline">
