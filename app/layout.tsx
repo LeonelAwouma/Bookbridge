@@ -12,24 +12,6 @@ const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-fraunces' })
 export const metadata: Metadata = {
   title: 'BookBridge — Pass possibility on',
   description: 'A local book-sharing community connecting books with new readers across Africa.',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
 }
 
 export const viewport: Viewport = {

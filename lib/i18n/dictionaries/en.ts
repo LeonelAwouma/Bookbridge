@@ -92,6 +92,8 @@ const en = {
     forgotPassword: 'Forgot password?',
     noAccount: "Don't have an account?",
     hasAccount: 'Already have an account?',
+    continueWithGoogle: 'Continue with Google',
+    orDivider: 'or',
     checkEmail: 'Check your email to confirm your account.',
     emailRateLimitError: 'Too many email attempts were made recently. Please wait a few minutes before trying again.',
     userAlreadyExistsError: 'An account with this email already exists. Try logging in instead.',

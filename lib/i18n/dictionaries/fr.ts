@@ -94,6 +94,8 @@ const fr: Dictionary = {
     forgotPassword: 'Mot de passe oublié ?',
     noAccount: 'Pas encore de compte ?',
     hasAccount: 'Déjà un compte ?',
+    continueWithGoogle: 'Continuer avec Google',
+    orDivider: 'ou',
     checkEmail: 'Vérifiez votre e-mail pour confirmer votre compte.',
     emailRateLimitError: 'Trop de tentatives d’envoi d’e-mail ont été effectuées récemment. Merci de patienter quelques minutes avant de réessayer.',
     userAlreadyExistsError: 'Un compte existe déjà avec cette adresse e-mail. Essayez de vous connecter.',

@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { GoogleAuthButton } from '@/components/auth/google-auth-button'
 import { signUpAction } from '@/lib/actions/auth'
 import { signupUserTypes } from '@/lib/data/user-types'
 import { useI18n } from '@/lib/i18n/provider'
@@ -120,6 +121,14 @@ export function SignupForm() {
             {t('nav.signup')}
           </Button>
         </form>
+
+        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="h-px flex-1 bg-border" />
+          {t('auth.orDivider')}
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        <GoogleAuthButton />
 
         <p className="mt-4 text-center text-sm text-muted-foreground">
           {t('auth.hasAccount')}{' '}
