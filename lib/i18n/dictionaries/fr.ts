@@ -47,8 +47,6 @@ const fr: Dictionary = {
     noBooksYet: 'Aucun livre près de {city} pour l’instant',
     noBooksYetGeneric: 'Aucun livre disponible pour l’instant',
     noBooksYetHint: 'Soyez le premier à donner dans votre région.',
-    loginToSeeBooks: 'Connectez-vous pour voir les livres disponibles',
-    loginToSeeBooksHint: 'La liste des livres est réservée aux membres inscrits de BookBridge.',
     booksNearYou: 'Livres près de chez vous',
     addLocationPrompt: 'Ajoutez votre ville pour voir les livres les plus proches de chez vous —',
     impactEyebrow: 'Faites la différence',

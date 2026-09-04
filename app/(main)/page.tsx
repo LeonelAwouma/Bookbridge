@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, BookOpen, Gift, Heart, Lock, MapPin, Search, ShieldCheck, Users } from 'lucide-react'
+import { ArrowRight, BookOpen, Gift, Heart, MapPin, Search, ShieldCheck, Users } from 'lucide-react'
 import { BookCard } from '@/components/books/book-card'
 import { getBooks } from '@/lib/supabase/books-queries'
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries'
@@ -42,7 +42,7 @@ export default async function HomePage() {
   const { dict, t } = await getServerTranslator()
 
   const [books, stats, needs, recentDonors] = await Promise.all([
-    profile ? getBooks({ city, limit: 8 }) : Promise.resolve([]),
+    getBooks({ city, limit: 8 }),
     getPlatformStats(),
     getNeedsNearby(city),
     getRecentDonors(),
@@ -148,21 +148,7 @@ export default async function HomePage() {
             {t('home.seeAllBooks')} <ArrowRight size={15} />
           </Link>
         </div>
-        {!profile ? (
-          <div className="map-view">
-            <Lock size={28} />
-            <strong>{t('home.loginToSeeBooks')}</strong>
-            <span>{t('home.loginToSeeBooksHint')}</span>
-            <div className="hero-actions" style={{ marginTop: '1rem' }}>
-              <Link className="button button-primary" href="/login?next=/books">
-                {t('nav.login')}
-              </Link>
-              <Link className="button button-secondary" href="/signup">
-                {t('nav.signup')}
-              </Link>
-            </div>
-          </div>
-        ) : books.length === 0 ? (
+        {books.length === 0 ? (
           <div className="map-view">
             <MapPin size={28} />
             <strong>{city ? t('home.noBooksYet', { city }) : t('home.noBooksYetGeneric')}</strong>
@@ -177,7 +163,7 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section className="needs-section">
+      <section id="needs" className="needs-section">
         <div className="section-heading">
           <div>
             <div className="eyebrow">{t('home.impactEyebrow')}</div>

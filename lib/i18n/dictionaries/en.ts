@@ -45,8 +45,6 @@ const en = {
     noBooksYet: 'No books listed near {city} yet',
     noBooksYetGeneric: 'No books available yet',
     noBooksYetHint: 'Be the first to donate in your area.',
-    loginToSeeBooks: 'Log in to see the available books',
-    loginToSeeBooksHint: 'The book list is reserved to registered BookBridge members.',
     booksNearYou: 'Books near you',
     addLocationPrompt: 'Add your city to see the books closest to you —',
     impactEyebrow: 'Make an impact',

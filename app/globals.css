@@ -63,3 +63,20 @@ button, input, textarea, select { font: inherit; } button, a { -webkit-tap-highl
   }
   .bottom-nav-item.primary { color: var(--foreground); font-weight: 700; }
 }
+
+.desktop-nav {
+  position: relative;
+}
+.desktop-nav a[aria-current='page'] {
+  color: var(--foreground);
+  font-weight: 700;
+}
+.nav-indicator {
+  position: absolute;
+  bottom: -10px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--primary);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
