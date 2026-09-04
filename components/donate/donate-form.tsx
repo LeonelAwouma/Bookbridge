@@ -11,53 +11,97 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { LocationPicker, type LocationValue } from '@/components/location/location-picker'
-import { createBookAction, attachBookImagesAction } from '@/lib/actions/books'
+import { createBookAction, attachBookImagesAction, updateBookAction, deleteBookImageAction } from '@/lib/actions/books'
 import { createClient } from '@/lib/supabase/client'
 import { compressImage, randomFileName } from '@/lib/images'
 import { categoryOptions, conditionOptions, educationLevelOptions, languageOptions } from '@/lib/data/taxonomy'
 import type { BookCategory, BookCondition, EducationLevel } from '@/lib/supabase/types'
 import { useI18n } from '@/lib/i18n/provider'
 
+export interface EditableBook {
+  id: string
+  title: string
+  author: string | null
+  isbn: string | null
+  category: BookCategory
+  subject: string | null
+  educationLevel: EducationLevel
+  language: string
+  condition: BookCondition
+  quantity: number
+  description: string | null
+  pickupAvailable: boolean
+  dropoffAvailable: boolean
+}
+
 interface DonateFormProps {
   userId: string
   initialLocation: LocationValue
   organizations: { id: string; name: string }[]
   prefill?: { category?: BookCategory; educationLevel?: EducationLevel; subject?: string }
+  editBook?: EditableBook
+  existingImages?: { id: string; url: string }[]
 }
 
-export function DonateForm({ userId, initialLocation, organizations, prefill }: DonateFormProps) {
+export function DonateForm({ userId, initialLocation, organizations, prefill, editBook, existingImages }: DonateFormProps) {
   const { t, dict } = useI18n()
   const router = useRouter()
 
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [isbn, setIsbn] = useState('')
-  const [category, setCategory] = useState<BookCategory>(prefill?.category ?? 'other')
-  const [subject, setSubject] = useState(prefill?.subject ?? '')
-  const [educationLevel, setEducationLevel] = useState<EducationLevel>(prefill?.educationLevel ?? 'all_levels')
-  const [language, setLanguage] = useState('fr')
-  const [condition, setCondition] = useState<BookCondition>('good')
-  const [quantity, setQuantity] = useState(1)
-  const [description, setDescription] = useState('')
+  const [title, setTitle] = useState(editBook?.title ?? '')
+  const [author, setAuthor] = useState(editBook?.author ?? '')
+  const [isbn, setIsbn] = useState(editBook?.isbn ?? '')
+  const [category, setCategory] = useState<BookCategory>(editBook?.category ?? prefill?.category ?? 'other')
+  const [subject, setSubject] = useState(editBook?.subject ?? prefill?.subject ?? '')
+  const [educationLevel, setEducationLevel] = useState<EducationLevel>(editBook?.educationLevel ?? prefill?.educationLevel ?? 'all_levels')
+  const [language, setLanguage] = useState(editBook?.language ?? 'fr')
+  const [condition, setCondition] = useState<BookCondition>(editBook?.condition ?? 'good')
+  const [quantity, setQuantity] = useState(editBook?.quantity ?? 1)
+  const [description, setDescription] = useState(editBook?.description ?? '')
   const [location, setLocation] = useState<LocationValue>(initialLocation)
-  const [pickupAvailable, setPickupAvailable] = useState(true)
-  const [dropoffAvailable, setDropoffAvailable] = useState(false)
+  const [pickupAvailable, setPickupAvailable] = useState(editBook?.pickupAvailable ?? true)
+  const [dropoffAvailable, setDropoffAvailable] = useState(editBook?.dropoffAvailable ?? false)
   const [donorSource, setDonorSource] = useState<string>('individual')
 
+  const [images, setImages] = useState(existingImages ?? [])
   const [photos, setPhotos] = useState<{ file: File; preview: string }[]>([])
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [uploadStatus, setUploadStatus] = useState<string | null>(null)
 
+  const photoSlotsUsed = images.length + photos.length
+
   async function onFilesSelected(fileList: FileList | null) {
     if (!fileList) return
-    const files = Array.from(fileList).slice(0, 3 - photos.length)
+    const files = Array.from(fileList).slice(0, 3 - photoSlotsUsed)
     const compressed = await Promise.all(files.map(compressImage))
     setPhotos((prev) => [...prev, ...compressed.map((file) => ({ file, preview: URL.createObjectURL(file) }))])
   }
 
   function removePhoto(index: number) {
     setPhotos((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  async function removeExistingImage(image: { id: string; url: string }) {
+    setImages((prev) => prev.filter((img) => img.id !== image.id))
+    if (editBook) await deleteBookImageAction(editBook.id, image.id, image.url)
+  }
+
+  async function uploadNewPhotos(bookId: string) {
+    if (photos.length === 0) return
+    setUploadStatus(t('donate.uploading', { done: 0, total: photos.length }))
+    const supabase = createClient()
+    const urls: string[] = []
+    for (let i = 0; i < photos.length; i++) {
+      const fileName = randomFileName(photos[i].file.name)
+      const path = `${userId}/${bookId}/${fileName}`
+      const { error: uploadError } = await supabase.storage.from('book-images').upload(path, photos[i].file)
+      if (!uploadError) {
+        const { data } = supabase.storage.from('book-images').getPublicUrl(path)
+        urls.push(data.publicUrl)
+      }
+      setUploadStatus(t('donate.uploading', { done: i + 1, total: photos.length }))
+    }
+    if (urls.length > 0) await attachBookImagesAction(bookId, urls)
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -77,6 +121,35 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
 
     setError(null)
     setSubmitting(true)
+
+    if (editBook) {
+      const result = await updateBookAction(editBook.id, {
+        title: title.trim(),
+        author,
+        isbn,
+        category,
+        subject,
+        educationLevel,
+        language,
+        condition,
+        quantity,
+        description,
+        ...location,
+        pickupAvailable,
+        dropoffAvailable,
+      })
+
+      if (result.error) {
+        setError(result.error)
+        setSubmitting(false)
+        return
+      }
+
+      await uploadNewPhotos(editBook.id)
+      router.push(`/books/${editBook.id}`)
+      router.refresh()
+      return
+    }
 
     const result = await createBookAction({
       donorProfileId: donorSource === 'individual' ? userId : null,
@@ -102,22 +175,7 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
       return
     }
 
-    if (photos.length > 0) {
-      setUploadStatus(t('donate.uploading', { done: 0, total: photos.length }))
-      const supabase = createClient()
-      const urls: string[] = []
-      for (let i = 0; i < photos.length; i++) {
-        const fileName = randomFileName(photos[i].file.name)
-        const path = `${userId}/${result.bookId}/${fileName}`
-        const { error: uploadError } = await supabase.storage.from('book-images').upload(path, photos[i].file)
-        if (!uploadError) {
-          const { data } = supabase.storage.from('book-images').getPublicUrl(path)
-          urls.push(data.publicUrl)
-        }
-        setUploadStatus(t('donate.uploading', { done: i + 1, total: photos.length }))
-      }
-      if (urls.length > 0) await attachBookImagesAction(result.bookId, urls)
-    }
+    await uploadNewPhotos(result.bookId)
 
     router.push(`/books/${result.bookId}?donated=1`)
     router.refresh()
@@ -125,7 +183,7 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      {organizations.length > 0 && (
+      {!editBook && organizations.length > 0 && (
         <section className="flex flex-col gap-1.5">
           <Label htmlFor="donorSource">{t('donate.donatingAs')}</Label>
           <Select value={donorSource} onValueChange={(v) => setDonorSource(v ?? 'individual')}>
@@ -241,39 +299,39 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
       <section className="flex flex-col gap-4">
         <h2 className="font-serif text-xl">{t('donate.photos')}</h2>
         <div className="flex flex-wrap gap-3">
-          {[0, 1, 2].map((index) => {
-            const photo = photos[index]
-            if (photo) {
-              return (
-                <div key={photo.preview} className="relative size-24 overflow-hidden rounded-lg ring-1 ring-border">
-                  <Image src={photo.preview} alt="" fill className="object-cover" unoptimized />
-                  <button
-                    type="button"
-                    onClick={() => removePhoto(index)}
-                    className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white"
-                    aria-label="Remove photo"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              )
-            }
-            const isNextSlot = index === photos.length
-            return (
-              <label
-                key={index}
-                className={
-                  isNextSlot
-                    ? 'flex size-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:bg-muted'
-                    : 'flex size-24 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground/40'
-                }
+          {images.map((image) => (
+            <div key={image.id} className="relative size-24 overflow-hidden rounded-lg ring-1 ring-border">
+              <Image src={image.url} alt="" fill className="object-cover" unoptimized />
+              <button
+                type="button"
+                onClick={() => removeExistingImage(image)}
+                className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white"
+                aria-label="Remove photo"
               >
-                <Upload size={18} />
-                <span className="text-[10px]">{t('donate.addPhoto')}</span>
-                {isNextSlot && <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFilesSelected(e.target.files)} />}
-              </label>
-            )
-          })}
+                <X size={12} />
+              </button>
+            </div>
+          ))}
+          {photos.map((photo, index) => (
+            <div key={photo.preview} className="relative size-24 overflow-hidden rounded-lg ring-1 ring-border">
+              <Image src={photo.preview} alt="" fill className="object-cover" unoptimized />
+              <button
+                type="button"
+                onClick={() => removePhoto(index)}
+                className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white"
+                aria-label="Remove photo"
+              >
+                <X size={12} />
+              </button>
+            </div>
+          ))}
+          {photoSlotsUsed < 3 && (
+            <label className="flex size-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:bg-muted">
+              <Upload size={18} />
+              <span className="text-[10px]">{t('donate.addPhoto')}</span>
+              <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFilesSelected(e.target.files)} />
+            </label>
+          )}
         </div>
         <p className="text-xs text-muted-foreground">{t('donate.photosHint')}</p>
         <p className="text-xs text-muted-foreground">{t('donate.photosSourceHint')}</p>
@@ -300,7 +358,7 @@ export function DonateForm({ userId, initialLocation, organizations, prefill }: 
 
       <Button type="submit" size="lg" disabled={submitting} className="w-full sm:w-auto">
         {submitting && <Loader2 className="animate-spin" size={16} />}
-        {t('home.ctaDonate')}
+        {editBook ? t('donate.editSubmit') : t('home.ctaDonate')}
       </Button>
     </form>
   )

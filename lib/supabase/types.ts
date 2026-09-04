@@ -42,6 +42,7 @@ export type Profile = {
   approx_longitude: number | null
   locale: string
   is_admin: boolean
+  email_notifications_enabled: boolean
   rating_avg: number
   rating_count: number
   books_donated_count: number
@@ -303,6 +304,7 @@ export type Database = {
       reject_donation_request: { Args: { p_request_id: string }; Returns: void }
       complete_donation_request: { Args: { p_request_id: string }; Returns: void }
       cancel_donation_request: { Args: { p_request_id: string }; Returns: void }
+      withdraw_book_listing: { Args: { p_book_id: string }; Returns: void }
       is_admin: { Args: Record<string, never>; Returns: boolean }
     }
     Enums: Record<string, never>

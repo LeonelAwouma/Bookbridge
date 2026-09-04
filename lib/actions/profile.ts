@@ -58,6 +58,7 @@ export async function updateProfileAction(input: {
   city: string
   neighborhood: string
   locale: string
+  emailNotificationsEnabled: boolean
 }): Promise<ActionResult> {
   const supabase = await createClient()
   const {
@@ -76,6 +77,7 @@ export async function updateProfileAction(input: {
       city: input.city,
       neighborhood: input.neighborhood || null,
       locale: input.locale,
+      email_notifications_enabled: input.emailNotificationsEnabled,
     })
     .eq('id', user.id)
 

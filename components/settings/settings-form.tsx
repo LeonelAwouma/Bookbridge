@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
 import { LocationPicker, type LocationValue } from '@/components/location/location-picker'
 import { updateProfileAction } from '@/lib/actions/profile'
 import { useI18n } from '@/lib/i18n/provider'
@@ -17,6 +18,7 @@ export function SettingsForm({ profile }: { profile: Profile }) {
   const [fullName, setFullName] = useState(profile.full_name)
   const [bio, setBio] = useState(profile.bio ?? '')
   const [phone, setPhone] = useState(profile.phone ?? '')
+  const [emailNotificationsEnabled, setEmailNotificationsEnabled] = useState(profile.email_notifications_enabled)
   const [location, setLocation] = useState<LocationValue>({
     country: profile.country ?? '',
     region: profile.region ?? '',
@@ -30,7 +32,7 @@ export function SettingsForm({ profile }: { profile: Profile }) {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSubmitting(true)
-    const result = await updateProfileAction({ fullName, bio, phone, locale, ...location })
+    const result = await updateProfileAction({ fullName, bio, phone, locale, emailNotificationsEnabled, ...location })
     setSubmitting(false)
     if (result.error) {
       toast.error(result.error)
@@ -55,6 +57,11 @@ export function SettingsForm({ profile }: { profile: Profile }) {
       </div>
 
       <LocationPicker value={location} onChange={setLocation} />
+
+      <label className="flex items-center gap-2 text-sm">
+        <Checkbox checked={emailNotificationsEnabled} onCheckedChange={(v) => setEmailNotificationsEnabled(!!v)} />
+        {t('settings.emailNotifications')}
+      </label>
 
       <Button type="submit" size="lg" disabled={submitting} className="w-full sm:w-auto">
         {submitting && <Loader2 className="animate-spin" size={16} />}

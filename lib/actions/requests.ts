@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getServerTranslator } from '@/lib/i18n/server'
+import { getServerTranslator, translateFor } from '@/lib/i18n/server'
+import { notifyByEmail } from '@/lib/notify-email'
 import type { ActionResult } from './auth'
 
 export async function createDonationRequestAction(input: {
@@ -16,7 +17,7 @@ export async function createDonationRequestAction(input: {
   } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  const { data: book } = await supabase.from('books').select('status').eq('id', input.bookId).maybeSingle()
+  const { data: book } = await supabase.from('books').select('status, title, donor_id, organization_id').eq('id', input.bookId).maybeSingle()
   if (!book || !['available', 'requested'].includes(book.status)) {
     const { t } = await getServerTranslator()
     return { error: t('books.alreadyBooked') }
@@ -43,6 +44,18 @@ export async function createDonationRequestAction(input: {
   })
 
   if (error) return { error: error.message }
+
+  let ownerId = book.donor_id
+  if (!ownerId && book.organization_id) {
+    const { data: org } = await supabase.from('organizations').select('owner_id').eq('id', book.organization_id).maybeSingle()
+    ownerId = org?.owner_id ?? null
+  }
+  if (ownerId) {
+    const { data: owner } = await supabase.from('profiles').select('locale').eq('id', ownerId).maybeSingle()
+    const title = translateFor(owner?.locale, 'notify.newRequestTitle', { title: book.title })
+    await notifyByEmail(ownerId, title, input.message || null, '/dashboard/requests')
+  }
+
   revalidatePath(`/books/${input.bookId}`)
   revalidatePath('/dashboard')
   return { success: true }
@@ -50,6 +63,8 @@ export async function createDonationRequestAction(input: {
 
 export async function acceptDonationRequestAction(requestId: string): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: request } = await supabase.from('donation_requests').select('requester_id').eq('id', requestId).maybeSingle()
+
   const { error } = await supabase.rpc('accept_donation_request', { p_request_id: requestId })
   if (error) {
     if (error.message.includes('BOOK_ALREADY_BOOKED')) {
@@ -58,22 +73,54 @@ export async function acceptDonationRequestAction(requestId: string): Promise<Ac
     }
     return { error: error.message }
   }
+
+  if (request) {
+    const { data: requester } = await supabase.from('profiles').select('locale').eq('id', request.requester_id).maybeSingle()
+    await notifyByEmail(
+      request.requester_id,
+      translateFor(requester?.locale, 'notify.requestAcceptedTitle'),
+      translateFor(requester?.locale, 'notify.requestAcceptedBody'),
+      '/messages',
+    )
+  }
+
   revalidatePath('/dashboard')
   return { success: true }
 }
 
 export async function rejectDonationRequestAction(requestId: string): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: request } = await supabase.from('donation_requests').select('requester_id').eq('id', requestId).maybeSingle()
+
   const { error } = await supabase.rpc('reject_donation_request', { p_request_id: requestId })
   if (error) return { error: error.message }
+
+  if (request) {
+    const { data: requester } = await supabase.from('profiles').select('locale').eq('id', request.requester_id).maybeSingle()
+    await notifyByEmail(request.requester_id, translateFor(requester?.locale, 'notify.requestRejectedTitle'), null, '/dashboard/requests')
+  }
+
   revalidatePath('/dashboard')
   return { success: true }
 }
 
 export async function completeDonationRequestAction(requestId: string): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: request } = await supabase.from('donation_requests').select('requester_id').eq('id', requestId).maybeSingle()
+
   const { error } = await supabase.rpc('complete_donation_request', { p_request_id: requestId })
   if (error) return { error: error.message }
+
+  if (request) {
+    const { data: requester } = await supabase.from('profiles').select('locale').eq('id', request.requester_id).maybeSingle()
+    await notifyByEmail(
+      request.requester_id,
+      translateFor(requester?.locale, 'notify.donationCompletedTitle'),
+      translateFor(requester?.locale, 'notify.donationCompletedBody'),
+      '/dashboard/requests',
+    )
+  }
+
   revalidatePath('/dashboard')
   return { success: true }
 }

@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { translateFor } from '@/lib/i18n/server'
+import { notifyByEmail } from '@/lib/notify-email'
 import type { ActionResult } from './auth'
 import type { Message } from '@/lib/supabase/types'
 
@@ -45,13 +46,17 @@ export async function sendMessageAction(
     const localeById = new Map((recipients ?? []).map((r) => [r.id, r.locale]))
 
     for (const p of participants) {
+      const title = translateFor(localeById.get(p.profile_id), 'notify.newMessageTitle')
+      const body = input.body.trim().slice(0, 140)
+      const link = `/messages/${input.conversationId}`
       await supabase.from('notifications').insert({
         profile_id: p.profile_id,
         type: 'new_message',
-        title: translateFor(localeById.get(p.profile_id), 'notify.newMessageTitle'),
-        body: input.body.trim().slice(0, 140),
-        link: `/messages/${input.conversationId}`,
+        title,
+        body,
+        link,
       })
+      await notifyByEmail(p.profile_id, title, body, link)
     }
   }
 

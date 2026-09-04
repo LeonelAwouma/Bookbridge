@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getMyBooksWithRequests } from '@/lib/supabase/dashboard-queries'
 import { RequestActions } from '@/components/dashboard/request-actions'
 import { ReviewDialog } from '@/components/dashboard/review-dialog'
+import { WithdrawBookButton } from '@/components/dashboard/withdraw-book-button'
 import { BackButton } from '@/components/ui/back-button'
 import { getServerTranslator } from '@/lib/i18n/server'
 
@@ -55,7 +56,17 @@ export default async function MyDonationsPage() {
                 <Link href={`/books/${book.id}`} className="font-medium hover:underline">
                   {book.title}
                 </Link>
-                <Badge variant={statusVariant[book.status]}>{dict.bookStatus[book.status]}</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant={statusVariant[book.status]}>{dict.bookStatus[book.status]}</Badge>
+                  {(book.status === 'available' || book.status === 'requested' || book.status === 'reserved') && (
+                    <>
+                      <Link href={`/donate/${book.id}/edit`} className="text-xs font-medium text-primary hover:underline">
+                        {t('common.edit')}
+                      </Link>
+                      <WithdrawBookButton bookId={book.id} />
+                    </>
+                  )}
+                </div>
               </div>
               {requests.length === 0 ? (
                 <p className="mt-2 text-xs text-muted-foreground">{t('dashboard.noRequestsForBook')}</p>
