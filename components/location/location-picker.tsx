@@ -54,11 +54,17 @@ export function LocationPicker({ value, onChange }: { value: LocationValue; onCh
         })
         setLocating(false)
       },
-      () => {
-        setLocateError(t('common.locationError'))
+      (err) => {
+        if (err.code === err.PERMISSION_DENIED) {
+          setLocateError(t('common.locationPermissionDenied'))
+        } else if (err.code === err.TIMEOUT) {
+          setLocateError(t('common.locationTimeout'))
+        } else {
+          setLocateError(t('common.locationError'))
+        }
         setLocating(false)
       },
-      { enableHighAccuracy: false, timeout: 8000 },
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 },
     )
   }
 

@@ -135,6 +135,8 @@ const fr: Dictionary = {
     useMyLocation: 'Utiliser ma position',
     locationCaptured: 'Position enregistrée — votre position exacte reste privée.',
     locationError: 'Impossible d’accéder à votre position. Veuillez la sélectionner manuellement.',
+    locationPermissionDenied: 'Accès à la position refusé. Autorisez la localisation pour ce site dans les réglages de votre navigateur, ou sélectionnez votre position manuellement.',
+    locationTimeout: 'La détection de votre position a pris trop de temps. Vérifiez que la localisation est activée sur votre appareil, ou sélectionnez-la manuellement.',
     locationUnsupported: 'La géolocalisation n’est pas prise en charge sur cet appareil.',
     loading: 'Chargement...',
     save: 'Enregistrer',

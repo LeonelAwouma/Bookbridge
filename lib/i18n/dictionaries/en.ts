@@ -133,6 +133,8 @@ const en = {
     useMyLocation: 'Use my location',
     locationCaptured: 'Location captured — your exact position stays private.',
     locationError: 'Could not access your location. Please select it manually.',
+    locationPermissionDenied: 'Location access was denied. Allow location for this site in your browser settings, or select your location manually.',
+    locationTimeout: 'Detecting your location took too long. Check that location services are enabled on your device, or select it manually.',
     locationUnsupported: 'Geolocation is not supported on this device.',
     loading: 'Loading...',
     save: 'Save',
