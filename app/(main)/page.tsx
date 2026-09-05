@@ -256,24 +256,26 @@ export default async function HomePage() {
         </Link>
       </section>
 
-      <footer>
-        <Link href="/" className="brand">
-          <span className="brand-mark">
-            <BookOpen size={17} />
-          </span>
-          <span>
-            book<span>bridge</span>
-          </span>
-        </Link>
-        <span>{t('home.footerTagline')}</span>
-        <div>
-          <Link href="/how-it-works">{t('home.footerAbout')}</Link>
-          <Link href="/impact">{t('home.footerImpact')}</Link>
-          <Link href="/terms">{t('home.footerTerms')}</Link>
-          <Link href="/privacy">{t('home.footerPrivacy')}</Link>
-          <span>🇨🇲 Leonel AWOUMA</span>
-        </div>
-      </footer>
+      {!profile && (
+        <footer>
+          <Link href="/" className="brand">
+            <span className="brand-mark">
+              <BookOpen size={17} />
+            </span>
+            <span>
+              book<span>bridge</span>
+            </span>
+          </Link>
+          <span>{t('home.footerTagline')}</span>
+          <div>
+            <Link href="/how-it-works">{t('home.footerAbout')}</Link>
+            <Link href="/impact">{t('home.footerImpact')}</Link>
+            <Link href="/terms">{t('home.footerTerms')}</Link>
+            <Link href="/privacy">{t('home.footerPrivacy')}</Link>
+            <span>🇨🇲 Leonel AWOUMA</span>
+          </div>
+        </footer>
+      )}
     </main>
   )
 }
