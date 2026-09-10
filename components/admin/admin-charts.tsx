@@ -2,7 +2,7 @@
 
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
-const barColor = '#e56b4c'
+const barColor = '#1f6b54'
 
 export function AdminBarChart({ data, dataKey, nameKey }: { data: Record<string, string | number>[]; dataKey: string; nameKey: string }) {
   return (

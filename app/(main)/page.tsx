@@ -1,5 +1,6 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, BookOpen, Gift, Heart, MapPin, Search, ShieldCheck, Users } from 'lucide-react'
+import { ArrowRight, Gift, Heart, MapPin, Search, ShieldCheck, Users } from 'lucide-react'
 import { BookCard } from '@/components/books/book-card'
 import { getBooks } from '@/lib/supabase/books-queries'
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries'
@@ -80,30 +81,16 @@ export default async function HomePage() {
             </div>
           )}
         </div>
-        <div className="hero-art" aria-label="Illustration of books being passed between people">
-          <div className="sun-disc" />
-          <div className="book-stack">
-            <span className="book-one">
-              READ
-              <br />
-              MORE
-            </span>
-            <span className="book-two">
-              SAVOIR
-              <br />
-              PARTAGER
-            </span>
-            <span className="book-three">
-              SECOND
-              <br />
-              LIFE
-            </span>
-          </div>
-          <div className="person person-left" />
-          <div className="person person-right" />
-          <div className="leaf leaf-one" />
-          <div className="leaf leaf-two" />
-          <span className="art-label">
+        <div className="hero-art">
+          <Image
+            src="/image_4.png"
+            alt="A volunteer handing books to smiling students at their school"
+            fill
+            sizes="(min-width: 900px) 520px, 100vw"
+            style={{ objectPosition: '22% 38%' }}
+            priority
+          />
+          <span className="hero-badge">
             {dict.home.artLabelLine1}
             <br />
             <strong>{dict.home.artLabelStrong}</strong>
@@ -198,6 +185,17 @@ export default async function HomePage() {
         )}
       </section>
 
+      <section className="story-section">
+        <div className="story-photo">
+          <Image src="/image_1.png" alt={t('home.storyPhotoAlt')} fill sizes="(min-width: 900px) 1120px, 100vw" style={{ objectPosition: 'center 30%' }} />
+          <div className="story-caption">
+            <div className="eyebrow">{t('home.storyEyebrow')}</div>
+            <h2>{t('home.storyTitle')}</h2>
+            <p>{t('home.storyBody')}</p>
+          </div>
+        </div>
+      </section>
+
       <section id="how-it-works" className="how-section">
         <div className="how-intro">
           <div className="eyebrow">{t('home.howEyebrow')}</div>
@@ -260,7 +258,7 @@ export default async function HomePage() {
         <footer>
           <Link href="/" className="brand">
             <span className="brand-mark">
-              <BookOpen size={17} />
+              <Image src="/logo-icon.png" alt="" width={33} height={24} />
             </span>
             <span>
               book<span>bridge</span>

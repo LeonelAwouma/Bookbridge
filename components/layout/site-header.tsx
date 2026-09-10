@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Bell, BookOpen, Gift, Menu, X } from 'lucide-react'
+import { Bell, Gift, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useI18n } from '@/lib/i18n/provider'
 import { initials } from '@/lib/utils'
@@ -83,7 +84,7 @@ export function SiteHeader({ profile, unreadCount }: { profile: Profile | null; 
     <header className="site-header">
       <Link href="/" className="brand">
         <span className="brand-mark">
-          <BookOpen size={20} />
+          <Image src="/logo-icon.png" alt="" width={47} height={34} priority />
         </span>
         <span>
           book<span>bridge</span>

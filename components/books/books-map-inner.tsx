@@ -8,7 +8,7 @@ import type { BookWithExtras } from '@/lib/supabase/books-queries'
 
 const dotIcon = L.divIcon({
   className: '',
-  html: '<span style="display:block;width:14px;height:14px;border-radius:50%;background:#e56b4c;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.4)"></span>',
+  html: '<span style="display:block;width:14px;height:14px;border-radius:50%;background:#1f6b54;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.4)"></span>',
   iconSize: [14, 14],
   iconAnchor: [7, 7],
 })

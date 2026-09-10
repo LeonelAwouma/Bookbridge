@@ -1,5 +1,5 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import { BookOpen } from 'lucide-react'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +7,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="p-6">
         <Link href="/" className="brand inline-flex">
           <span className="brand-mark">
-            <BookOpen size={20} />
+            <Image src="/logo-icon.png" alt="" width={56} height={40} priority />
           </span>
           <span>
             book<span>bridge</span>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Gift, MessageCircle, PackageCheck, Search, ShieldCheck, Users } from 'lucide-react'
 import { getServerTranslator } from '@/lib/i18n/server'
@@ -31,6 +32,10 @@ export default async function HowItWorksPage() {
           <h1 className="font-serif text-4xl">{t('howItWorks.title')}</h1>
           <p>{t('howItWorks.subtitle')}</p>
         </div>
+      </div>
+
+      <div className="howit-photo mt-8">
+        <Image src="/image_1.png" alt={t('howItWorks.photoAlt')} fill sizes="(min-width: 1220px) 1120px, 100vw" style={{ objectPosition: 'center 32%' }} />
       </div>
 
       <div className="mt-10 grid gap-10 md:grid-cols-2">

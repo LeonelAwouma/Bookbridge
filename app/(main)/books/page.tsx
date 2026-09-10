@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { List, Map as MapIcon, Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -62,9 +63,19 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
 
   return (
     <div className="content-section">
+      <div className="books-banner">
+        <div className="books-banner-copy">
+          <div className="eyebrow">{t('home.exploreEyebrow')}</div>
+          <h2>{t('books.bannerTitle')}</h2>
+          <p>{t('books.bannerBody')}</p>
+        </div>
+        <div className="books-banner-photo">
+          <Image src="/image_3.png" alt={t('books.bannerAlt')} fill sizes="220px" />
+        </div>
+      </div>
+
       <div className="section-heading">
         <div>
-          <div className="eyebrow">{t('home.exploreEyebrow')}</div>
           <h1 className="font-serif text-4xl">{t('books.pageTitle')}</h1>
           <p>{city ? t('books.booksAvailableNear', { count: books.length, city }) : t('books.booksAvailable', { count: books.length })}</p>
         </div>

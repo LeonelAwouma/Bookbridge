@@ -23,11 +23,11 @@ export async function notifyByEmail(profileId: string, subject: string, body: st
       subject,
       html: `
         <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 480px; margin: 0 auto;">
-          <p style="color: #e56b4c; font-weight: 800; font-size: 18px; margin-bottom: 24px;">BookBridge</p>
+          <p style="color: #1f6b54; font-weight: 800; font-size: 18px; margin-bottom: 24px;">BookBridge</p>
           <h2 style="font-size: 20px; margin: 0 0 12px;">${subject}</h2>
           ${body ? `<p style="color: #555; line-height: 1.6;">${body}</p>` : ''}
           <p style="margin-top: 24px;">
-            <a href="${url}" style="display: inline-block; background: #e56b4c; color: #fff; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 700;">
+            <a href="${url}" style="display: inline-block; background: #1f6b54; color: #fff; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 700;">
               Open BookBridge
             </a>
           </p>
