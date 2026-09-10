@@ -149,6 +149,10 @@ export function citiesFor(countryName: string, regionName: string) {
   return regionsFor(countryName).find((r) => r.name === regionName)?.cities ?? []
 }
 
+export function allCities() {
+  return [...new Set(countries.flatMap((c) => c.regions.flatMap((r) => r.cities)))].sort((a, b) => a.localeCompare(b))
+}
+
 export const majorCities = [
   { city: 'Douala', country: 'Cameroon', lat: 4.0511, lng: 9.7679 },
   { city: 'Yaoundé', country: 'Cameroon', lat: 3.848, lng: 11.5021 },

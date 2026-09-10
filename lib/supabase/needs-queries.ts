@@ -24,7 +24,7 @@ export async function getNeeds(filters: NeedFilters = {}): Promise<NeedWithExtra
 
   query = query.in('status', filters.status ?? ['open', 'partially_fulfilled'])
   if (filters.country) query = query.eq('country', filters.country)
-  if (filters.city) query = query.eq('city', filters.city)
+  if (filters.city) query = query.ilike('city', filters.city.trim())
   if (filters.category) query = query.eq('category', filters.category)
   if (filters.educationLevel) query = query.eq('education_level', filters.educationLevel)
   if (filters.requesterId) query = query.eq('requester_id', filters.requesterId)

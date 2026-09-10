@@ -9,7 +9,7 @@ import { BooksMap } from '@/components/books/books-map'
 import { getBooks } from '@/lib/supabase/books-queries'
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries'
 import { categoryOptions, conditionOptions, educationLevelOptions, languageOptions } from '@/lib/data/taxonomy'
-import { majorCities } from '@/lib/data/locations'
+import { majorCities, allCities } from '@/lib/data/locations'
 import { distanceKm } from '@/lib/geo'
 import { getServerTranslator } from '@/lib/i18n/server'
 import type { BookCategory, BookCondition, EducationLevel } from '@/lib/supabase/types'
@@ -76,7 +76,12 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
             <Search size={18} />
             <input name="q" defaultValue={params.q} placeholder={t('books.searchPlaceholder')} />
           </label>
-          <Input name="city" defaultValue={city} placeholder={t('books.cityPlaceholder')} className="sm:w-48" />
+          <Input name="city" list="city-options" defaultValue={city} placeholder={t('books.cityPlaceholder')} className="sm:w-48" />
+          <datalist id="city-options">
+            {allCities().map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
           <Button type="submit">{t('books.search')}</Button>
         </div>
 

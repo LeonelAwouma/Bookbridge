@@ -29,9 +29,9 @@ export async function getCityImpact(city: string) {
   const supabase = await createClient()
 
   const [{ count: booksDonated }, { data: donorRows }, { count: schoolsSupported }] = await Promise.all([
-    supabase.from('books').select('id', { count: 'exact', head: true }).eq('city', city).eq('status', 'completed'),
-    supabase.from('books').select('donor_id').eq('city', city).eq('status', 'completed'),
-    supabase.from('organizations').select('id', { count: 'exact', head: true }).eq('city', city).gt('books_received_count', 0),
+    supabase.from('books').select('id', { count: 'exact', head: true }).ilike('city', city.trim()).eq('status', 'completed'),
+    supabase.from('books').select('donor_id').ilike('city', city.trim()).eq('status', 'completed'),
+    supabase.from('organizations').select('id', { count: 'exact', head: true }).ilike('city', city.trim()).gt('books_received_count', 0),
   ])
 
   const donors = new Set((donorRows ?? []).map((r) => r.donor_id).filter(Boolean))
