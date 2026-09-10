@@ -29,14 +29,14 @@ export function SiteHeader({ profile, unreadCount }: { profile: Profile | null; 
   const linkRefs = useRef(new Map<string, HTMLAnchorElement>())
 
   const navLinks = [
-    { href: '/books', label: t('nav.findBooks') },
-    { href: '/donate', label: t('nav.donateBooks') },
-    { href: '/requests', label: t('nav.bookRequests') },
-    { href: '/organizations', label: t('nav.organizations') },
-    { href: '/campaigns', label: t('nav.campaigns') },
-    { href: '/impact', label: t('nav.impact') },
-    { href: '/how-it-works', label: t('nav.howItWorks') },
-  ]
+    { href: '/books', label: t('nav.findBooks'), authOnly: false },
+    { href: '/donate', label: t('nav.donateBooks'), authOnly: true },
+    { href: '/requests', label: t('nav.bookRequests'), authOnly: true },
+    { href: '/organizations', label: t('nav.organizations'), authOnly: true },
+    { href: '/campaigns', label: t('nav.campaigns'), authOnly: true },
+    { href: '/impact', label: t('nav.impact'), authOnly: false },
+    { href: '/how-it-works', label: t('nav.howItWorks'), authOnly: false },
+  ].filter((link) => profile || !link.authOnly)
 
   const activeHref = pathname === '/' ? sectionHref : pathname
 

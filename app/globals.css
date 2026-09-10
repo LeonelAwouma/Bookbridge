@@ -50,7 +50,10 @@ button, input, textarea, select { font: inherit; } button, a { -webkit-tap-highl
     justify-content: center;
   }
   .bottom-nav-item.active { color: var(--primary); }
+  .bottom-nav-item.primary { position: relative; }
   .bottom-nav-item.primary .bottom-nav-icon {
+    border: 0;
+    padding: 0;
     background: var(--primary);
     color: white;
     border-radius: 50%;
@@ -62,6 +65,40 @@ button, input, textarea, select { font: inherit; } button, a { -webkit-tap-highl
     box-shadow: 0 6px 16px #1f6b5455;
   }
   .bottom-nav-item.primary { color: var(--foreground); font-weight: 700; }
+  .bottom-nav-scrim { position: fixed; inset: 0; z-index: 29; background: #16261f26; border: 0; padding: 0; }
+  .bottom-nav-speeddial {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 31;
+    width: max-content;
+    animation: speeddial-in 0.18s ease;
+  }
+  .speeddial-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: var(--foreground);
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 10px 24px #16261f26;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .speeddial-option svg { color: var(--primary); }
+  .speeddial-option:hover { background: var(--muted); }
+  @keyframes speeddial-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
 }
 
 .desktop-nav {

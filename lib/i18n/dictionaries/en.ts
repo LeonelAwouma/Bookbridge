@@ -20,6 +20,8 @@ const en = {
     signup: 'Sign up',
     search: 'Search',
     donate: 'Donate',
+    postBookRequest: 'Request a Book',
+    quickActions: 'Quick actions',
     notifications: 'Notifications',
     admin: 'Admin',
     terms: 'Terms',

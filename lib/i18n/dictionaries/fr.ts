@@ -22,6 +22,8 @@ const fr: Dictionary = {
     signup: 'Inscription',
     search: 'Rechercher',
     donate: 'Donner',
+    postBookRequest: 'Demander un livre',
+    quickActions: 'Actions rapides',
     notifications: 'Notifications',
     admin: 'Admin',
     terms: 'CGU',
